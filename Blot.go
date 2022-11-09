@@ -22,7 +22,12 @@ func (B *Ba) Get(url string) (dt *Ba) {
 	if resp, err = http.Get(url); err != nil {
 		panic("请求get失败")
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			panic("get关闭发生错误")
+		}
+	}(resp.Body)
 	respstring, _ := io.ReadAll(resp.Body)
 	B.Resp_Data = respstring
 	dt = B
@@ -33,6 +38,7 @@ func (B *Ba) Post(url string) {
 	if resp, err = http.Post(url, "application/json", strings.NewReader("username=test&password=ab123123")); err != nil {
 		panic("post请求失败")
 	}
+
 }
 func (B *Ba) scan(value any) {
 	//将结果返回
@@ -70,7 +76,6 @@ func Start() (ba *Ba) {
 	ba = &Ba{}
 	return
 }
-
 func main() {
 	var a string
 	Start().Get("http://www.baidu.com").scan(&a)
