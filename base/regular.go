@@ -23,9 +23,11 @@ func Html_url(resp string) {
 		c := strings.Split(i, ".")
 		for _, j := range type_data {
 			if c[len(c)-1] == j {
-				data = append(data_url, data[:index]...)
-				data = append(data_url, data[:index+1]...)
+				//data = append(data_url, data[:index]...)
+				data = append(data_url, data[index:]...)
 				break
+			} else {
+				
 			}
 		}
 	}
