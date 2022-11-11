@@ -1,6 +1,7 @@
-package blot
+package main
 
 import (
+	"blot/base"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -28,6 +29,9 @@ func (B *Ba) Get(url string) *Ba {
 			panic("get关闭发生错误")
 		}
 	}(resp.Body)
+
+	resp.Header.Set("content-type", "text/html;charset=utf-8")
+
 	respstring, _ := io.ReadAll(resp.Body)
 	B.RespData = respstring
 	return B
@@ -57,7 +61,7 @@ func (B *Ba) scan(value any) {
 			dataValue.SetString(string(B.RespData))
 		case reflect.Struct:
 			for i := 0; i < dataType.Elem().NumField(); i++ { //通过反射对结构体赋值
-				name := B.jsonAssert()[dataType.Elem().Field(i).Name]
+				name := B.jsonAssert()[strings.ToLower(dataType.Elem().Field(i).Name)] //结构体名称转小写
 				if dataValue.Type() == reflect.TypeOf(name) {
 					dataValue.FieldByName(dataType.Elem().Field(i).Name).Set(reflect.ValueOf(name))
 				} else {
@@ -93,8 +97,8 @@ func Start() (ba *Ba) {
 	return
 }
 func main() {
-	//var a string
-	//Start().Get("http://www.baidu.com").scan(&a)
-	//fmt.Println(a)
+	var a string
+	Start().Get("https://www.glasssix.com/").scan(&a)
+	base.Html_url(a)
 
 }
