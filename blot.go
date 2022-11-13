@@ -98,7 +98,7 @@ func Start() (ba *Ba) {
 }
 func main() {
 	var a string
-	Start().Get("https://www.glasssix.com/").scan(&a)
+	Start().Get("http://www.diji-it.com/").scan(&a)
 	base.Html_url(a)
 
 }
