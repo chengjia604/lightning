@@ -52,7 +52,7 @@ func (B *Ba) PostJson(url string) *Ba {
 }
 
 func (B *Ba) scan(value any) {
-	//将结果返回
+	//结构化赋值
 	dataType := reflect.TypeOf(value)
 	if dataType.Kind() == reflect.Ptr { //通过kind函数获取到是否为指针
 		dataValue := reflect.ValueOf(value).Elem()
@@ -91,9 +91,9 @@ func (B *Ba) jsonData() string {
 	}
 	return string(data)
 }
-func Start() (ba *Ba) {
+func Start() (B *Ba) {
 	//项目入口
-	ba = &Ba{}
+	B = &Ba{}
 	return
 }
 func main() {

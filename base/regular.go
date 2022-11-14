@@ -6,23 +6,22 @@ import (
 	"strings"
 )
 
-const a = "\"[^\\s]*/[^\\s]*\""
+const a = "\"*/[^\\s]*/*\""
 
 func url(resp string) (data []string) {
 	//提取前端返回的url
 
 	comp, _ := regexp.Compile(a)
 	data = comp.FindAllString(resp, -1) //全局返回匹配的
-
 	return
 }
 
 func Html_url(resp string) {
 	//过滤掉.png jpg gif等等
-	var type_data = []string{"png\"", "jpg\"", "gif\"", "css\"", "js\"", "text/javascript\""}
+	var type_data = []string{"png\"", "jpg\"", "gif\"", "css\"", "js\"", "text/javascript\"", "\"text/css\""}
 	//var url_data []string
 	data := url(resp)
-	fmt.Println(data)
+
 	ii := 0
 	for index := 0; index < len(data); index++ {
 		c := strings.Split(data[index-ii], ".")
@@ -35,7 +34,7 @@ func Html_url(resp string) {
 		}
 
 	}
-
+	fmt.Println(data)
 }
 
 func remove_arry() {
