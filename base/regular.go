@@ -19,14 +19,13 @@ func url(resp string) (data []string) {
 
 func Html_url(resp string) {
 	//过滤掉.png jpg gif等等
-	var type_data = []string{"png\"", "jpg\"", "gif\"", "css\"", "js\""}
+	var type_data = []string{"png\"", "jpg\"", "gif\"", "css\"", "js\"", "text/javascript\""}
 	//var url_data []string
 	data := url(resp)
+	fmt.Println(data)
 	ii := 0
-	//index := 0
-
 	for index := 0; index < len(data); index++ {
-		c := strings.Split(data[index], ".")
+		c := strings.Split(data[index-ii], ".")
 		for _, j := range type_data {
 			if c[len(c)-1] == j {
 				data = append(data[:index-ii], data[index+1-ii:]...)
@@ -36,18 +35,6 @@ func Html_url(resp string) {
 		}
 
 	}
-	fmt.Println(data)
-	//for _, i := range data {
-	//	c := strings.Split(i, ".")
-	//	for _, j := range type_data {
-	//		if c[len(c)-1] == j {
-	//			data = append(data[:index-ii], data[index-ii+1:]...)
-	//			ii++
-	//			break
-	//		}
-	//	}
-	//	index++
-	//}
 
 }
 
