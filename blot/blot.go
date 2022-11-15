@@ -1,8 +1,9 @@
-package main
+package blot
 
 import (
-	"blot/base"
+	"blot/config"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"reflect"
@@ -10,9 +11,10 @@ import (
 )
 
 type Ba struct {
-	ERROR    error
-	RespData []byte
-	Json     string
+	ERROR     error
+	RespData  []byte
+	Json      string
+	Yaml_data map[any]any
 }
 
 var resp *http.Response
@@ -21,7 +23,7 @@ var err error
 func (B *Ba) Get(url string) *Ba {
 	//get请求
 	if resp, err = http.Get(url); err != nil {
-		panic("请求get失败")
+		panic(err)
 	}
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
@@ -30,7 +32,9 @@ func (B *Ba) Get(url string) *Ba {
 		}
 	}(resp.Body)
 
-	resp.Header.Set("content-type", "text/html;charset=utf-8")
+	//resp.Header.Set("content-type", "text/html;charset=utf-8")
+
+	resp.Header.Set("user-agent", fmt.Sprintf("%s", B.Yaml_data["headers"].(map[any]any)["user-agent"]))
 
 	respstring, _ := io.ReadAll(resp.Body)
 	B.RespData = respstring
@@ -40,7 +44,7 @@ func (B *Ba) Get(url string) *Ba {
 func (B *Ba) PostJson(url string) *Ba {
 	//json请求，返回[]byte
 	B.Json = url
-	if resp, err = http.Post(url, "application/json", strings.NewReader(B.jsonData())); err != nil {
+	if resp, err = http.Post(url, "", strings.NewReader(B.jsonData())); err != nil {
 		panic("post请求失败")
 	}
 	defer func() {
@@ -93,12 +97,8 @@ func (B *Ba) jsonData() string {
 }
 func Start() (B *Ba) {
 	//项目入口
-	B = &Ba{}
+	B = &Ba{
+		Yaml_data: config.Read_config(),
+	}
 	return
-}
-func main() {
-	var a string
-	Start().Get("http://www.diji-it.com/").scan(&a)
-	base.Html_url(a)
-
 }
