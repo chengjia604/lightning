@@ -4,6 +4,7 @@ import (
 	"blot/structural"
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 type Regular struct {
@@ -19,16 +20,29 @@ func (r Regular) url(resp string) (data []string) {
 func (r Regular) Html_url(resp string) []string {
 	/*数据清洗*/
 	data := r.url(resp)
+	mismatch := []string{"jpg", "png", "gif", "jpeg"}
 	ii := 0
-	re, _ := regexp.Compile("\"")
+	fmt.Println(data)
 	for index := 0; index < len(data); index++ {
-		if ok, _ := regexp.MatchString("(src|herf)=*", data[index-ii]); ok {
-			re.FindString()
+		data_index := data[index-ii]
+		if ok, _ := regexp.MatchString("(src|herf)=*", data_index); ok {
+			c := strings.Split(data_index, "\"")
+			c1 := strings.Split(c[len(c)-1], ".")
+			a := c1[len(c1)-1]
+			for _, index_h := range mismatch {
+				//判断后缀
+				if a == index_h {
+					data = append(data[:index-ii], data[index+1-ii:]...)
+					fmt.Println(ii, index, data_index)
+					ii++
+					break
+				}
+			}
 		} else {
 			continue
 		}
 	}
-	fmt.Println(data)
+
 	return data
 
 }
