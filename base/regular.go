@@ -19,11 +19,13 @@ func (r Regular) url(resp string) (data []string) {
 
 func (r Regular) Html_url(resp string) []string {
 	/*数据清洗*/
+
 	data := r.url(resp)
 	mismatch := []string{"jpg", "png", "gif", "jpeg"}
 	ii := 0
-	fmt.Println(data)
-	for index := 0; index < len(data); index++ {
+	num_index := len(data)
+	for index := 0; index < num_index; index++ {
+		var b = true
 		data_index := data[index-ii]
 		if ok, _ := regexp.MatchString("(src|herf)=*", data_index); ok {
 			c := strings.Split(data_index, "\"")
@@ -33,16 +35,18 @@ func (r Regular) Html_url(resp string) []string {
 				//判断后缀
 				if a == index_h {
 					data = append(data[:index-ii], data[index+1-ii:]...)
-					fmt.Println(ii, index, data_index)
 					ii++
+					b = false
 					break
 				}
+			}
+			if b {
+				data[index-ii] = c[len(c)-1]
 			}
 		} else {
 			continue
 		}
+
 	}
-
 	return data
-
 }
