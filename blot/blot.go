@@ -1,7 +1,9 @@
 package blot
 
 import (
-	"blot/config"
+	"blot/base"
+	"blot/structural"
+
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,17 +13,19 @@ import (
 )
 
 type Ba struct {
-	ERROR     error
-	RespData  []byte
-	Json      string
-	Yaml_data map[any]any
+	ERROR    error
+	RespData []byte
+	Json     string
+	base.Regular
 }
 
 var resp *http.Response
 var err error
 
 func (B *Ba) Get(url string) *Ba {
-	//get请求
+	/*
+		默认百度请求头，后期可通过命令设置
+	*/
 	if resp, err = http.Get(url); err != nil {
 		panic(err)
 	}
@@ -31,10 +35,7 @@ func (B *Ba) Get(url string) *Ba {
 			panic("get关闭发生错误")
 		}
 	}(resp.Body)
-
-	//resp.Header.Set("content-type", "text/html;charset=utf-8")
-
-	resp.Header.Set("user-agent", fmt.Sprintf("%s", B.Yaml_data["headers"].(map[any]any)["user-agent"]))
+	resp.Header.Set("user-agent", fmt.Sprintf("%s", structural.Yaml_data["headers"].(map[any]any)["user-agent"]))
 
 	respstring, _ := io.ReadAll(resp.Body)
 	B.RespData = respstring
@@ -42,7 +43,9 @@ func (B *Ba) Get(url string) *Ba {
 }
 
 func (B *Ba) PostJson(url string) *Ba {
-	//json请求，返回[]byte
+	/*
+		默认百度请求头和json的格式
+	*/
 	B.Json = url
 	if resp, err = http.Post(url, "", strings.NewReader(B.jsonData())); err != nil {
 		panic("post请求失败")
@@ -50,13 +53,14 @@ func (B *Ba) PostJson(url string) *Ba {
 	defer func() {
 		_ = resp.Body.Close()
 	}()
+	resp.Header.Set("content-type", "")
+	resp.Header.Set("user-agent", "")
 	respbyte, _ := io.ReadAll(resp.Body)
 	B.RespData = respbyte
 	return B
 }
 
-func (B *Ba) scan(value any) {
-	//结构化赋值
+func (B *Ba) Scan(value any) {
 	dataType := reflect.TypeOf(value)
 	if dataType.Kind() == reflect.Ptr { //通过kind函数获取到是否为指针
 		dataValue := reflect.ValueOf(value).Elem()
@@ -97,8 +101,7 @@ func (B *Ba) jsonData() string {
 }
 func Start() (B *Ba) {
 	//项目入口
-	B = &Ba{
-		Yaml_data: config.Read_config(),
-	}
+	B = &Ba{}
+
 	return
 }

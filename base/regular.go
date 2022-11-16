@@ -1,37 +1,30 @@
 package base
 
 import (
+	"blot/structural"
 	"fmt"
 	"regexp"
 )
 
-func url(resp string) (data []string) {
+type Regular struct {
+}
+
+func (r Regular) url(resp string) (data []string) {
 	//提取前端返回的url
 
-	comp, _ := regexp.Compile("")
-	data = comp.FindAllString(resp, -1) //全局返回匹配的
+	comp, _ := regexp.Compile(fmt.Sprintf("%s", structural.Yaml_data["regular"]))
+	data = comp.FindAllString(resp, -1)
 	return
 }
 
-func Html_url(resp string) {
+func (r Regular) Html_url(resp string) []string {
 
-	data := url(resp)
-	fmt.Println(data)
+	data := r.url(resp)
 	//ii := 0
 	//for index := 0; index < len(data); index++ {
-	//	c := strings.Split(data[index-ii], ".")
-	//	for _, j := range type_data {
-	//		if c[len(c)-1] == j {
-	//			data = append(data[:index-ii], data[index+1-ii:]...)
-	//			ii++
-	//			break
-	//		}
-	//	}
 	//
 	//}
-	//fmt.Println(data)
-}
+	fmt.Println(data)
+	return data
 
-func remove_arry() {
-	//删除对应的删除
 }
