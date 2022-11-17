@@ -1,7 +1,6 @@
 package blot
 
 import (
-	"blot/base"
 	"blot/structural"
 
 	"encoding/json"
@@ -13,20 +12,23 @@ import (
 )
 
 type Ba struct {
-	ERROR    error
-	RespData []byte
-	Json     string
-	base.Regular
+	ERROR     error
+	RespData  []byte
+	Json      map[string]any
+	Get_data  string
+	Post_data string
+	Url       string
+	Regular
 }
 
 var resp *http.Response
 var err error
 
-func (B *Ba) Get(url string) *Ba {
+func (B *Ba) Get() *Ba {
 	/*
 		默认百度请求头，后期可通过命令设置
 	*/
-	if resp, err = http.Get(url); err != nil {
+	if resp, err = http.Get(B.Url); err != nil {
 		panic(err)
 	}
 	defer func(Body io.ReadCloser) {
@@ -36,18 +38,18 @@ func (B *Ba) Get(url string) *Ba {
 		}
 	}(resp.Body)
 	resp.Header.Set("user-agent", fmt.Sprintf("%s", structural.Yaml_data["headers"].(map[any]any)["user-agent"]))
-
 	respstring, _ := io.ReadAll(resp.Body)
 	B.RespData = respstring
+	B.Get_data = string(respstring)
 	return B
 }
 
-func (B *Ba) PostJson(url string) *Ba {
+func (B *Ba) PostJson(json_data map[string]any) *Ba {
 	/*
 		默认百度请求头和json的格式
 	*/
-	B.Json = url
-	if resp, err = http.Post(url, "", strings.NewReader(B.jsonData())); err != nil {
+	B.Json = json_data
+	if resp, err = http.Post(B.Url, "", strings.NewReader(B.jsonData())); err != nil {
 		panic("post请求失败")
 	}
 	defer func() {
@@ -57,6 +59,7 @@ func (B *Ba) PostJson(url string) *Ba {
 	resp.Header.Set("user-agent", "")
 	respbyte, _ := io.ReadAll(resp.Body)
 	B.RespData = respbyte
+	B.Post_data = string(respbyte)
 	return B
 }
 
@@ -95,13 +98,15 @@ func (B *Ba) jsonData() string {
 	//转换成json数据
 	data, err := json.Marshal(B.Json)
 	if err != nil {
-		panic("转化结构体失败")
+		panic(err)
 	}
 	return string(data)
 }
-func Start() (B *Ba) {
+func Start(url string) (B *Ba) {
 	//项目入口
-	B = &Ba{}
+	B = &Ba{
+		Url: url,
+	}
 
 	return
 }

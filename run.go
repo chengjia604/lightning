@@ -1,21 +1,17 @@
 package main
 
 import (
-	"blot/blot"
+	"blot/config"
 	"fmt"
-	"time"
+	"regexp"
 )
 
 func main() {
-
-	var a string
-	b := blot.Start()
-	bT := time.Now()
-	b.Get("https://www.xiuzhanwang.com/a1/").Scan(&a)
-	eT := time.Since(bT)
-	fmt.Println(eT)
-	b.Html_url(a)
-
-	// 开始时间
-
+	//b := blot.Start("https://www.xiuzhanwang.com/a1").Get()
+	//jsfind.Ordinary(b)
+	for _, impression := range config.Read_fuzz() {
+		if ok, _ := regexp.MatchString(".*"+impression+".*", "js_dataser123"); ok {
+			fmt.Println(1)
+		}
+	}
 }

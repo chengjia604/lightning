@@ -1,4 +1,4 @@
-package base
+package blot
 
 import (
 	"blot/structural"
@@ -19,7 +19,6 @@ func (r Regular) url(resp string) (data []string) {
 
 func (r Regular) Html_url(resp string) []string {
 	/*数据清洗*/
-
 	data := r.url(resp)
 	mismatch := []string{"jpg", "png", "gif", "jpeg"}
 	ii := 0
@@ -46,7 +45,6 @@ func (r Regular) Html_url(resp string) []string {
 		} else {
 			continue
 		}
-
 	}
 	return data
 }
