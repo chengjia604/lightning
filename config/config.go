@@ -28,6 +28,9 @@ func Read_fuzz() (b []string) {
 		//逐行读取
 		line := scanner.Text() // or
 		//line := scanner.Bytes()
+		if len(line) == 0 {
+			continue
+		}
 		b = append(b, line)
 		//do_your_function(line)
 	}

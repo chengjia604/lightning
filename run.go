@@ -1,17 +1,16 @@
 package main
 
 import (
-	"blot/config"
+	"blot/blot"
+	"blot/jsfind"
 	"fmt"
-	"regexp"
+	"time"
 )
 
 func main() {
-	//b := blot.Start("https://www.xiuzhanwang.com/a1").Get()
-	//jsfind.Ordinary(b)
-	for _, impression := range config.Read_fuzz() {
-		if ok, _ := regexp.MatchString(".*"+impression+".*", "js_dataser123"); ok {
-			fmt.Println(1)
-		}
-	}
+	a := time.Now()
+	b := blot.Start("http://ehome.homekoo.com/login.php").Get()
+	jsfind.Ordinary(b)
+	fmt.Println("结束")
+	fmt.Println(time.Since(a))
 }

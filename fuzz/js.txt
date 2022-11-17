@@ -4,3 +4,11 @@ USER
 download
 Download
 DOWNLOAD
+DownLoad
+passwd
+Passwd
+password
+Password
+PASSWORD
+
+
