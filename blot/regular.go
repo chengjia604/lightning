@@ -48,3 +48,10 @@ func (r Regular) Html_url(resp string) []string {
 	}
 	return data
 }
+
+func (r Regular) Domain(url string) (domain string) {
+	//域名提取
+	re, _ := regexp.Compile(fmt.Sprintf("%s", structural.Yaml_data["domain"]))
+	domain = re.FindString(url)
+	return
+}

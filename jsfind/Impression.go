@@ -10,11 +10,17 @@ import (
 
 func Ordinary(B *blot.Ba) {
 	//普通提取
-	js_context(B, B.Html_url(B.Get_data))
+	fmt.Println(B.Html_url(B.Get_data))
 }
 
-func depth() {
+func depth(B *blot.Ba) {
 	//深度提取
+	data := B.Html_url(B.Get_data)
+	for _, url_data := range data {
+		if B.Domain(url_data) == B.DomainName {
+
+		}
+	}
 
 }
 
@@ -37,4 +43,7 @@ func js_context(B *blot.Ba, url_data []string) {
 			}
 		}
 	}
+}
+func Route_extraction() {
+	//提取js中的路由
 }

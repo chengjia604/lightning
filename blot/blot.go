@@ -2,7 +2,6 @@ package blot
 
 import (
 	"blot/structural"
-
 	"encoding/json"
 	"fmt"
 	"io"
@@ -12,12 +11,13 @@ import (
 )
 
 type Ba struct {
-	ERROR     error
-	RespData  []byte
-	Json      map[string]any
-	Get_data  string
-	Post_data string
-	Url       string
+	ERROR      error
+	RespData   []byte
+	Json       map[string]any
+	Get_data   string
+	Post_data  string
+	Url        string
+	DomainName string
 	Regular
 }
 
@@ -107,6 +107,6 @@ func Start(url string) (B *Ba) {
 	B = &Ba{
 		Url: url,
 	}
-
+	B.DomainName = B.Domain(url)
 	return
 }
