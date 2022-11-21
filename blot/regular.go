@@ -20,30 +20,26 @@ func (r Regular) url(resp string) (data []string) {
 func (r Regular) Html_url(resp string) []string {
 	/*数据清洗*/
 	data := r.url(resp)
-	mismatch := []string{"jpg", "png", "gif", "jpeg"}
+	mismatch := []string{"jpg", "png", "gif", "jpeg", "css"}
 	ii := 0
 	num_index := len(data)
 	for index := 0; index < num_index; index++ {
 		var b = true
 		data_index := data[index-ii]
-		if ok, _ := regexp.MatchString("(src|herf)=*", data_index); ok {
-			c := strings.Split(data_index, "\"")
-			c1 := strings.Split(c[len(c)-1], ".")
-			a := c1[len(c1)-1]
-			for _, index_h := range mismatch {
-				//判断后缀
-				if a == index_h {
-					data = append(data[:index-ii], data[index+1-ii:]...)
-					ii++
-					b = false
-					break
-				}
+		c := strings.Split(data_index, "\"")
+		c1 := strings.Split(c[len(c)-1], ".")
+		a := c1[len(c1)-1]
+		for _, index_h := range mismatch {
+			//判断后缀
+			if a == index_h {
+				data = append(data[:index-ii], data[index+1-ii:]...)
+				ii++
+				b = false
+				break
 			}
-			if b {
-				data[index-ii] = c[len(c)-1]
-			}
-		} else {
-			continue
+		}
+		if b {
+			data[index-ii] = c[len(c)-1]
 		}
 	}
 	return data
@@ -51,7 +47,11 @@ func (r Regular) Html_url(resp string) []string {
 
 func (r Regular) Domain(url string) (domain string) {
 	//域名提取
+
 	re, _ := regexp.Compile(fmt.Sprintf("%s", structural.Yaml_data["domain"]))
+	if url == structural.Yaml_data["domain"] {
+		return ""
+	}
 	domain = re.FindString(url)
 	return
 }

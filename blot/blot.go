@@ -11,11 +11,10 @@ import (
 )
 
 type Ba struct {
-	ERROR      error
-	RespData   []byte
-	Json       map[string]any
-	Get_data   string
-	Post_data  string
+	ERROR    error
+	RespData []byte
+	Json     map[string]any
+
 	Url        string
 	DomainName string
 	Regular
@@ -40,7 +39,7 @@ func (B *Ba) Get() *Ba {
 	resp.Header.Set("user-agent", fmt.Sprintf("%s", structural.Yaml_data["headers"].(map[any]any)["user-agent"]))
 	respstring, _ := io.ReadAll(resp.Body)
 	B.RespData = respstring
-	B.Get_data = string(respstring)
+	//B.Get_data = string(respstring)
 	return B
 }
 
@@ -59,7 +58,7 @@ func (B *Ba) PostJson(json_data map[string]any) *Ba {
 	resp.Header.Set("user-agent", "")
 	respbyte, _ := io.ReadAll(resp.Body)
 	B.RespData = respbyte
-	B.Post_data = string(respbyte)
+	//B.Post_data = string(respbyte)
 	return B
 }
 

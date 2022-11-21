@@ -21,7 +21,7 @@ func Read_config() (map_data map[any]any) {
 func Read_fuzz() (b []string) {
 	//读取fuzz
 
-	file, _ := os.Open("F:\\go_project\\blot\\fuzz\\js.txt")
+	file, _ := os.Open("")
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
