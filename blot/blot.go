@@ -20,6 +20,10 @@ type Ba struct {
 	Regular
 }
 
+type re_url struct {
+	Url string
+}
+
 var resp *http.Response
 var err error
 
