@@ -11,10 +11,10 @@ import (
 )
 
 type Ba struct {
-	ERROR    error
-	RespData []byte
-	Json     map[string]any
-
+	ERROR      error
+	RespData   []byte
+	Json       map[string]any
+	Ip         string
 	Url        string
 	DomainName string
 	Regular
@@ -47,6 +47,7 @@ func (B *Ba) PostJson(json_data map[string]any) *Ba {
 	/*
 		默认百度请求头和json的格式
 	*/
+
 	B.Json = json_data
 	if resp, err = http.Post(B.Url, "", strings.NewReader(B.jsonData())); err != nil {
 		panic("post请求失败")
