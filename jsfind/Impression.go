@@ -3,57 +3,31 @@ package jsfind
 import (
 	"blot/blot"
 	"fmt"
-	"regexp"
+	"github.com/dlclark/regexp2"
 	"strings"
 	"sync"
 )
 
-var html_data string
+var ordin = make(chan string, 30)
+var l sync.Mutex
+var w sync.WaitGroup
 
 func Ordinary(B *blot.Ba) {
 	//普通提取
+	var html_data string
 	B.Scan(&html_data)
-	Depth(B)
-
+	js_context(B, B.Html_url(html_data))
+	fmt.Println(B.Html_url(html_data))
+	go go_th(B)
+	w.Add(1)
+	w.Wait()
 }
-
-var wait sync.WaitGroup
 
 func Depth(B *blot.Ba) {
 	//深度提取
 	fmt.Println("深度提取")
 
-	//data := B.Html_url(html_data)
-	//Start_data <- data
-	//wait.Add(1)
-	//wait.Wait()
 }
-
-//func manger(B *blot.Ba) {
-//	fmt.Println("manger")
-//	for {
-//		select {
-//		case url1 := <-url:
-//			go func() {
-//				//50个并发请求
-//				B.Url = url1
-//				B.Get().Scan(&de)
-//				ch_data <- de
-//			}()
-//		case th_html := <-ch_data:
-//			go func() {
-//				data := B.Html_url(th_html)
-//				js_context(B, data)
-//			}()
-//		case data := <-Start_data:
-//			for _, url_data := range data {
-//				if B.Domain(url_data) == B.DomainName { //判断域名
-//					url <- url_data
-//				}
-//			}
-//		}
-//	}
-//}
 
 func js_context(B *blot.Ba, url_data []string) {
 
@@ -64,11 +38,7 @@ func js_context(B *blot.Ba, url_data []string) {
 			continue
 		} else {
 			//提取内容
-			var js_data string
-			B.Url = B.Url + data
-			B.Get().Scan(&js_data)
-			data_separate(B,js_data)//js内容
-
+			ordin <- data
 
 			//for _, impression := range fuzz {
 			//	if ok, _ := regexp.MatchString(".*"+impression+".*", js_data); ok {
@@ -78,24 +48,55 @@ func js_context(B *blot.Ba, url_data []string) {
 		}
 	}
 }
+func go_th(B *blot.Ba) {
+	//多线程
+	for {
+		select {
+		case js_data := <-ordin:
+			go requ_js(B, js_data)
+		}
+	}
+}
+func requ_js(B *blot.Ba, data string) {
+	l.Lock()
+	defer l.Unlock()
+	var js_data string
+	B.Get(B.DomainName + data).Scan(&js_data)
+	data_separate(js_data)
+
+}
+
 func Js_path(context string) []string {
-	recom, _ := regexp.Compile("(?<='|\")/.+?(?='|\")")
-	path_data := recom.FindAllString(context, -1)
+	var path_data []string
+	recom := regexp2.MustCompile("(?<='|\")/[a-zA-Z0-9]+?(?='|\")", 0)
+	m, _ := recom.FindStringMatch(context)
+	for m != nil {
+		path_data = append(path_data, m.String())
+		m, _ = recom.FindNextMatch(m)
+	}
 	return path_data
 }
 
-func data_separate(B *blot.Ba,context string) {
+func data_separate(context string) {
 	//js和path分离
-	for _, data := range Js_path(context) {
-		if ok, _ := regexp.MatchString("(?<=)\\.(js)", data); ok {
-			//js文件
-			B.Url=
-		} else if ok, _ := regexp.MatchString("(?<=)\\.(css)", data); ok {
-			continue
-		} else {
-			//连接
-		}
 
+	for _, data := range Js_path(context) {
+		re := regexp2.MustCompile("(?<=)\\\\.(js)", 0)
+		if ok, _ := re.MatchString(data); ok {
+			fmt.Println(data)
+			ordin <- data
+
+		}
+		//if ok, _ := regexp2.MustCompile("(?<=)\\.(js)", data); ok {
+		//	//js文件
+		//	fmt.Println(data)
+		//	ordin <- data
+		//} else if ok, _ := regexp.MatchString("(?<=)\\.(css)", data); ok {
+		//	continue
+		//} else {
+		//	//连接
+		//	fmt.Println(data)
+		//}
 	}
 }
 func Route_extraction() {

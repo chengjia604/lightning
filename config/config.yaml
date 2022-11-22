@@ -1,6 +1,6 @@
-regular: (https?|http|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]|(herf|src)=[\'\"]?([^\'\"]*)[^\'\"]
+regular: (https?|http|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]|(href|src)=[\'\"]?([^\'\"]*)[^\'\"]
 headers:
   content-type: application/json
   user-agent: Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)
-domain: (https|http?://)[^/]+([[^:blank/]]*)
+domain: (https?://)[^/]+([[^:blank/]]*)
 threadnumber: 20

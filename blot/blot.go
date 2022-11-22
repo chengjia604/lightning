@@ -20,18 +20,17 @@ type Ba struct {
 	Regular
 }
 
-type re_url struct {
-	Url string
-}
-
 var resp *http.Response
 var err error
 
-func (B *Ba) Get() *Ba {
+func (B *Ba) Get(url string) *Ba {
 	/*
 		默认百度请求头，后期可通过命令设置
 	*/
-	if resp, err = http.Get(B.Url); err != nil {
+	if B.DomainName == "" {
+		B.DomainName = B.Domain(url)
+	}
+	if resp, err = http.Get(url); err != nil {
 		panic(err)
 	}
 	defer func(Body io.ReadCloser) {
@@ -47,13 +46,16 @@ func (B *Ba) Get() *Ba {
 	return B
 }
 
-func (B *Ba) PostJson(json_data map[string]any) *Ba {
+func (B *Ba) PostJson(url string, json_data map[string]any) *Ba {
 	/*
 		默认百度请求头和json的格式
 	*/
+	if B.DomainName == "" {
 
+		B.DomainName = B.Domain(url)
+	}
 	B.Json = json_data
-	if resp, err = http.Post(B.Url, "", strings.NewReader(B.jsonData())); err != nil {
+	if resp, err = http.Post(url, "", strings.NewReader(B.jsonData())); err != nil {
 		panic("post请求失败")
 	}
 	defer func() {
@@ -106,11 +108,9 @@ func (B *Ba) jsonData() string {
 	}
 	return string(data)
 }
-func Start(url string) (B *Ba) {
+func Start() (B *Ba) {
 	//项目入口
-	B = &Ba{
-		Url: url,
-	}
-	B.DomainName = B.Domain(url)
+	B = &Ba{}
+
 	return
 }

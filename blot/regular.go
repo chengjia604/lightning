@@ -49,9 +49,9 @@ func (r Regular) Domain(url string) (domain string) {
 	//域名提取
 
 	re, _ := regexp.Compile(fmt.Sprintf("%s", structural.Yaml_data["domain"]))
-	if url == structural.Yaml_data["domain"] {
-		return ""
-	}
+	//if url == structural.Yaml_data["domain"] {
+	//	return ""
+	//}
 	domain = re.FindString(url)
 	return
 }
