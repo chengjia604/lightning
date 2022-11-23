@@ -10,12 +10,16 @@ import (
 
 var (
 	ordin = make(chan string, 30)
-	dep   = make(chan string, 30)
+	dep   = make(chan string, 50)
+)
+var (
+	url_recevie = make(chan []string)
 )
 var l sync.Mutex
 var w sync.WaitGroup
 var url []string
-var js []string
+var js1 []string
+var ok = make(chan bool, 1)
 
 func Ordinary(B *blot.Ba) {
 	//普通提取
@@ -24,7 +28,7 @@ func Ordinary(B *blot.Ba) {
 	B.Scan(&html_data)
 
 	go go_th(B)
-	js_context(B.Html_url(html_data), "Ordinary")
+	js_context(B, B.Html_url(html_data), "Ordinary")
 	w.Add(1)
 	w.Wait()
 }
@@ -34,55 +38,56 @@ func Depth(B *blot.Ba) {
 	fmt.Println("深度提取")
 }
 
-func js_context(url_data []string, typename string) {
-
-	//fuzz := config.Read_fuzz()
-
+func js_context(B *blot.Ba, url_data []string, typename string) {
+	var aaa string
 	for _, data := range url_data {
 		if strings.HasPrefix(data, "http") || strings.HasPrefix(data, "https") {
 			//http连接
 			if typename == "Ordinary" {
 				continue
 			} else {
-
+				B.Get(data).Scan(&aaa)
+				B.Html_url(aaa)
 			}
 		} else {
 			//.js连接
 			if typename == "Ordinary" {
-				fmt.Println(data)
 				ordin <- data
 			} else {
 				dep <- data
 			}
 
-			//for _, impression := range fuzz {
-			//	if ok, _ := regexp.MatchString(".*"+impression+".*", js_data); ok {
-			//		fmt.Println("包含铭感字符:", impression)
-			//	}
-			//}
 		}
 	}
-
+	if typename == "Ordinary" {
+		ordin <- "True"
+	}
 }
 
 func go_th(B *blot.Ba) {
 	//监听数据，
-	fmt.Println(111)
 	for {
 		select {
 		case js_data := <-ordin:
 			go requ_js(B, js_data, "ord")
 		case js_data1 := <-dep:
 			go requ_js(B, js_data1, "de")
-		
 		}
 	}
+
 }
 
 func requ_js(B *blot.Ba, data string, typename string) {
 	l.Lock()
 	defer l.Unlock()
 	var js_data string
+	if data == "True" {
+		fmt.Println(url)
+		fmt.Println(js1)
+		w.Done()
+
+	}
+	js1 = append(js1, data)
 	B.Get(B.DomainName + data).Scan(&js_data)
 	data_separate(js_data, typename)
 }
@@ -111,7 +116,9 @@ func data_separate(context string, typename string) {
 		if ok, _ := rejs.MatchString(data); ok {
 			//js文件继续请求内容
 			if typename == "ord" {
-				js = append(js, data)
+
+				js1 = append(js1, data)
+
 			} else {
 				dep <- data
 			}
@@ -120,22 +127,19 @@ func data_separate(context string, typename string) {
 		} else {
 			// /xxx的链接
 			if typename == "ord" {
+
 				url = append(url, data)
+
 			}
 		}
-		//if ok, _ := regexp2.MustCompile("(?<=)\\.(js)", data); ok {
-		//	//js文件
-		//	fmt.Println(data)
-		//	ordin <- data
-		//} else if ok, _ := regexp.MatchString("(?<=)\\.(css)", data); ok {
-		//	continue
-		//} else {
-		//	//连接
-		//	fmt.Println(data)
-		//}
+
 	}
 
 }
-func Route_extraction() {
-	//提取js中的路由
-}
+
+//fuzz := config.Read_fuzz()
+//for _, impression := range fuzz {
+//	if ok, _ := regexp.MatchString(".*"+impression+".*", context); ok {
+//		fmt.Println("包含铭感字符:", impression)
+//	}
+//}

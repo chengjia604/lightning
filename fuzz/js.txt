@@ -16,3 +16,17 @@ SYSTEMS
 upload
 UPLOAD
 Upload
+[/CityAiCompute/# /NewsInformation/newsPageIndex /NewsInformation/newsPageIndex /NewsInformation/newsPageIndex /IndustryCompute/# /NewsInformation/newsPageIndex /NewsInformation/new
+sPageIndex /NewsInformation/Media-Report /NewsInformation/Media-Report /Home /ComputeProduct /ComputeProduct /DataCenter /DataCenter /CollaborativePlatform /CollaborativePlatform /C
+ooperationCases /CooperationCases /NewsInformation/newsPageIndex /NewsInformation/newsPageIndex /NewsInformation/Media-Report /NewsInformation/Media-Report /JoinUs /JoinUs /Business
+-Cooperation /Business-Cooperation /FaceBody /PlateCar /IndustryView /SmartPark /SmartCollege /SmartRental /SmartCommunity /SmartPolice /SmartSpot /SmartPrevention /FaceMachine /Fac
+ePayTerminal /OtherHardware /SteelIndustry /CoalChar /ElectricPower /ThermalDetector /FurnacelDetector /IndustryCompute/#1 /IndustryCompute/#2 /IndustryCompute/#3 /CityAiCompute/#1
+/CityAiCompute/#2 /CityAiCompute/#3 /CityAiCompute/#4 /CityAiCompute/#5 /CompanyProfile/#aboutUsBrief /CompanyProfile/#aboutUsCulture /CompanyProfile/#aboutUsCourse /CompanyProfile/
+#aboutUsLaboratory /CompanyProfile/#aboutUsPartner /CompanyProfile/#aboutUsQualifications /JoinUs /NewsInformation/newsPageIndex /NewsInformation/newsPageIndex /CooperationCasesInfo
+?id= /a/b /script /dist/ /NewsInformation/NewsDetailDemo?id= /ThermalDetector /FurnacelDetector /IndustryCompute /ElectricPower /CityAiCompute /CoalChar /DataCenter /SmartPrevention
+ /SmartPark /SmartCollege /SmartRental /SmartCommunity /SmartPolice /SmartSpot /SteelIndustry /FaceBody /IndustryView /FaceMachine /CollaborativePlatform /DataPlatform /BigDataAnaly
+sis /OtherHardware /FacePayTerminal /PlateCar /ComputeProduct /NewsInformation /NewsInformation/newsPageIndex /NewsInformation/newsPageIndex /NewsInformation/Media-Report /NewsInfor
+mation/NewsDetail0 /NewsInformation/NewsDetail1 /NewsInformation/NewsDetail2 /NewsInformation/NewsDetail3 /NewsInformation/NewsDetail4 /NewsInformation/NewsDetailDemo /CompanyProfil
+e /JoinUs /Business-Cooperation /ConnectUs /CooperationCases /CooperationCasesInfo /product/main /produce /banner/glasssixListByType /selectMobileAllBanner /news/glasssixListByConte
+nt /news/glasssixEdit /contactInfo/save /cooperationCase/getGlasssixSelectList /detailCase/getImglist /detailCase/glasssixGetById /contactInfo/sendMessage /job/treeList /file/getImg
+Url /ComputeProduct /CityAiCompute/#1 /SmartPark /SmartCollege /SmartRental /SmartCommunity /SmartPolice /SmartSpot /FaceMachine /CollaborativePlatform]
