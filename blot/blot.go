@@ -51,7 +51,6 @@ func (B *Ba) PostJson(url string, json_data map[string]any) *Ba {
 		默认百度请求头和json的格式
 	*/
 	if B.DomainName == "" {
-
 		B.DomainName = B.Domain(url)
 	}
 	B.Json = json_data
@@ -63,6 +62,7 @@ func (B *Ba) PostJson(url string, json_data map[string]any) *Ba {
 	}()
 	resp.Header.Set("content-type", "")
 	resp.Header.Set("user-agent", "")
+
 	respbyte, _ := io.ReadAll(resp.Body)
 	B.RespData = respbyte
 	//B.Post_data = string(respbyte)
