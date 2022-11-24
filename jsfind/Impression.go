@@ -19,7 +19,7 @@ var l sync.Mutex
 var w sync.WaitGroup
 var url []string
 var js1 []string
-var ok = make(chan bool, 1)
+var number_de = make(chan int, 3)
 
 func Ordinary(B *blot.Ba) {
 	//普通提取
@@ -28,7 +28,7 @@ func Ordinary(B *blot.Ba) {
 	B.Scan(&html_data)
 
 	go go_th(B)
-	js_context(B, B.Html_url(html_data), "Ordinary")
+	go js_context(B, B.Html_url(html_data), "Ordinary")
 	w.Add(1)
 	w.Wait()
 }
@@ -38,29 +38,32 @@ func Depth(B *blot.Ba) {
 	fmt.Println("深度提取")
 }
 
-func js_context(B *blot.Ba, url_data []string, typename string) {
+func js_context(B *blot.Ba, url_data map[string]bool, typename string) {
+	//爬取第二层应该是用一个线程，而不是一个http一个线程
 	var aaa string
-	for _, data := range url_data {
-		if strings.HasPrefix(data, "http") || strings.HasPrefix(data, "https") {
+	for k, _ := range url_data {
+		if strings.HasPrefix(k, "http") || strings.HasPrefix(k, "https") {
 			//http连接
 			if typename == "Ordinary" {
 				continue
 			} else {
-				B.Get(data).Scan(&aaa)
-				B.Html_url(aaa)
+				B.Get(k).Scan(&aaa)
+				go js_context(B, B.Html_url(aaa), typename)
 			}
 		} else {
 			//.js连接
 			if typename == "Ordinary" {
-				ordin <- data
+				ordin <- k
 			} else {
-				dep <- data
+				dep <- k
 			}
-
 		}
 	}
 	if typename == "Ordinary" {
 		ordin <- "True"
+	} else {
+		w.Add(1)
+		number_de <- 1
 	}
 }
 
@@ -72,6 +75,13 @@ func go_th(B *blot.Ba) {
 			go requ_js(B, js_data, "ord")
 		case js_data1 := <-dep:
 			go requ_js(B, js_data1, "de")
+		case number := <-number_de:
+			number++
+			if number == 3 {
+				for i := 0; i < number; i++ {
+					w.Done()
+				}
+			}
 		}
 	}
 
