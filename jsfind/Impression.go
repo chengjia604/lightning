@@ -40,9 +40,9 @@ func js_parse() {
 	//解析js
 	defer w.Done()
 	for k, value := range js1 {
-		color.Green(k, value)
+		color.Green(fmt.Sprintf("%s           %s", k, value))
 	}
-	w.Wait()
+
 }
 func Depth(B *blot.Ba) {
 	//深度提取
@@ -105,8 +105,8 @@ func requ_js(data string) {
 	var js_data string
 	defer blot.L.Unlock()
 	B.Get(B.Url + data).Scan(&js_data)
-	//go fuzz(data, js_data)
-	data_separate(js_data)
+	go fuzz(data, js_data)
+	go data_separate(js_data)
 }
 func Js_path(context string) []string {
 	var path_data []string
@@ -129,6 +129,8 @@ var (
 
 func data_separate(context string) {
 	//js和path分离
+	blot.L.Lock()
+	defer blot.L.Unlock()
 	for _, data := range Js_path(context) {
 		if ok, _ := rejs.MatchString(data); ok {
 			//js文件继续请求内容
