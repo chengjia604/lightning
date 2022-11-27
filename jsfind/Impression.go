@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	ordin = make(chan string, 30)
+	ordin = make(chan string, 50)
 	dep   = make(chan string, 50)
 )
 
@@ -56,27 +56,26 @@ func js_context(url_data map[string]bool, typename string) {
 	for k, _ := range url_data {
 		if strings.HasPrefix(k, "http") || strings.HasPrefix(k, "https") {
 			//http连接
-			//if typename == "Ordinary" {
-			//	url = append(url, k)
-			//	continue
-			//} else {
-			//	if B.Domain(k) == B.DomainName {
-			//		http_data = append(http_data, k)
-			//	}
-			//}
-			a, b := B.Subdomain(k)
-			if B.Subdom == a {
-				url = append(url, k)
-			} else {
-				if b == B.DomainName {
-					SubdomainName[k] = true
-					//dep <- k //子域名
-				}
-			}
+			w.Add(1)
+			go subdom(k)
 		} else {
 			//.js连接
 			w.Add(1)
 			ordin <- k
+		}
+	}
+}
+func subdom(k string) {
+	defer w.Done()
+	blot.L.Lock()
+	defer blot.L.Unlock()
+	a, b := B.Subdomain(k)
+	if B.Subdom == a {
+		url = append(url, k)
+	} else {
+		if b == B.DomainName {
+			SubdomainName[k] = true
+			//dep <- k //子域名
 		}
 	}
 }
@@ -117,7 +116,6 @@ func Js_path(context string) []string {
 		path_data = append(path_data, m.String())
 		m, _ = recom.FindNextMatch(m)
 	}
-
 	return path_data
 }
 
@@ -139,7 +137,7 @@ func data_separate(context string) {
 			//} else {
 			//	dep <- data
 			//}
-			fmt.Println(data)
+
 			ordin <- data
 		} else if okcss, _ := recss.MatchString(data); okcss {
 			continue
