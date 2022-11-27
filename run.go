@@ -1,62 +1,31 @@
 package main
 
 import (
+	"blot/blot"
+	"blot/jsfind"
+	"flag"
 	"fmt"
-	"sync"
+	"github.com/fatih/color"
+	"time"
 )
 
 func main() {
-	//a := time.Now()
-	//b := blot.Start().Get("http://www.glasssix.com")
-	//jsfind.Ordinary(b)
-	//fmt.Println("结束")
-	//fmt.Println(time.Since(a))
-
-	go a()
-	l.Add(1)
-	l.Wait()
-	num<-aa
-	close(num)
-
+	//host := flag.String("host", "127.0.0.1", "请输入host地址")
+	//port := flag.Int("port", 3306, "请输入端口号")
+	//flag.Parse() // 解析参数
+	//fmt.Printf("%s:%d\n", *host, *port)
+	fmt.Println("==================================================================================================================================================================================")
+	color.Blue(" .----------------.  .----------------.  .----------------.  .----------------. \n| .--------------. || .--------------. || .--------------. || .--------------. |\n| |   ______     | || |     ____     | || |   _____      | || |  _________   | |\n| |  |_   _ \\    | || |   .'    `.   | || |  |_   _|     | || | |  _   _  |  | |\n| |    | |_) |   | || |  /  .--.  \\  | || |    | |       | || | |_/ | | \\_|  | |\n| |    |  __'.   | || |  | |    | |  | || |    | |   _   | || |     | |      | |\n| |   _| |__) |  | || |  \\  `--'  /  | || |   _| |__/ |  | || |    _| |_     | |\n| |  |_______/   | || |   `.____.'   | || |  |________|  | || |   |_____|    | |\n| |              | || |              | || |              | || |              | |\n| '--------------' || '--------------' || '--------------' || '--------------' |\n '----------------'  '----------------'  '----------------'  '----------------'")
+	flag.StringVar(&U, "u", "", "获取的域名")
+	flag.Parse()
+	start()
 }
 
-var l sync.WaitGroup
+var U string
 
-var num = make(chan []int)
-var aa = []int{1, 2, 3, 4, 5, 6}
-
-func a() {
-	for _, i := range aa {
-		if i == 3 {
-			//go a()
-			fmt.Println(1)
-		}
-	}
-	//fmt.Println("开始")
-	//ll.Add(1)
-	//ll.Wait()
-	//
-	//fmt.Println("结束")
-}
-
-var a2 int
-
-func b() {
-
-	for {
-		select {
-		case a1 := <-num:
-
-			l.Add(1)
-			a2 += 1
-			fmt.Println(a1, a2)
-
-			//fmt.Println(a2)
-			if a2 == 3 {
-				l.Done()
-				l.Done()
-				l.Done()
-			}
-		}
-	}
+func start() {
+	a := time.Now()
+	b := blot.Start().Get(fmt.Sprintf("%v", U))
+	jsfind.Ordinary(b)
+	fmt.Println(time.Since(a))
 }

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"reflect"
 	"strings"
+	"sync"
 )
 
 type Ba struct {
@@ -17,18 +18,21 @@ type Ba struct {
 	Ip         string
 	Url        string
 	DomainName string
+	Subdom     string
 	Regular
 }
 
 var resp *http.Response
 var err error
+var L sync.Mutex
 
 func (B *Ba) Get(url string) *Ba {
 	/*
 		默认百度请求头，后期可通过命令设置
 	*/
 	if B.DomainName == "" {
-		B.DomainName = B.Domain(url)
+		B.Url = B.Domain(url)                     //带http的域名
+		B.Subdom, B.DomainName = B.Subdomain(url) //顶级域名和二级域名
 	}
 	if resp, err = http.Get(url); err != nil {
 		panic(err)
