@@ -13,12 +13,12 @@ import (
 
 var (
 	ordin = make(chan string, 30)
-	dep   = make(chan string, 50)
+	dep   = make(chan string, 30)
 )
 
 var w sync.WaitGroup
-var url []string
-var js1 = make(map[string][]string)
+var url = make(map[string]bool)
+var js1 = make(map[string]bool)
 var B *blot.Ba
 
 func Ordinary(b *blot.Ba) {
@@ -26,14 +26,24 @@ func Ordinary(b *blot.Ba) {
 	var html_data string
 	B = b
 	B.Scan(&html_data)
-
 	go go_th()
-	go js_context(B.Html_url(html_data))
+	go js_context(B.Html_url(html_data), "ord")
 	w.Add(1)
 	w.Wait()
 
 	w.Add(1)
 	go url_parse()
+
+	w.Wait()
+}
+func Depth(b *blot.Ba) {
+	//深度提取
+	var html_data string
+	B = b
+	B.Scan(&html_data)
+	go go_th()
+	go js_context(B.Html_url(html_data), "dep")
+	w.Add(1)
 	w.Wait()
 
 }
@@ -41,35 +51,42 @@ func Ordinary(b *blot.Ba) {
 func js_parse() {
 	//解析js
 	defer w.Done()
-	fmt.Println("js资产：")
-	for k, value := range js1 {
-		color.Green(fmt.Sprintf("%s           %s", k, value))
+	fmt.Println("js资产:\n")
+	for k, _ := range js1 {
+		color.Green(fmt.Sprintf("%s", k))
 	}
+
 }
 func url_parse() {
 	//输出url
 	w.Add(1)
 	defer w.Done()
-	fmt.Println("url资产：")
-	for _, i := range url {
-		color.Green(fmt.Sprintf("%s", i))
+	fmt.Println("url资产:\n")
+	for k, _ := range url {
+		color.Green(fmt.Sprintf("%s%s", B.Url, k))
+	}
+	go subdomname()
+}
+
+func subdomname() {
+	//子域名
+	w.Add(1)
+	defer w.Done()
+	fmt.Println("子域名资产:\n")
+	for K, _ := range SubdomainName {
+		color.Green(fmt.Sprintf("%s", K))
 	}
 	go js_parse()
 }
-func Depth(B *blot.Ba) {
-	//深度提取
-	fmt.Println("深度提取")
-}
 
 var SubdomainName = make(map[string]bool) //子域名
-func js_context(url_data map[string]bool) {
-
+func js_context(url_data map[string]bool, typename string) {
 	defer w.Done()
 	for k, _ := range url_data {
 		if strings.HasPrefix(k, "http") || strings.HasPrefix(k, "https") {
 			//http连接
 			w.Add(1)
-			go subdom(k)
+			go subdom(k, typename)
 		} else {
 			//.js连接
 			w.Add(1)
@@ -78,24 +95,29 @@ func js_context(url_data map[string]bool) {
 	}
 
 }
-func subdom(k string) {
+func subdom(k string, name string) {
 	defer w.Done()
 	blot.L.Lock()
 	defer blot.L.Unlock()
 	a, b := B.Subdomain(k)
 	if B.Subdom == a {
-		url = append(url, k)
+		url[k] = true
 	} else {
 		if b == B.DomainName {
 			SubdomainName[k] = true
-			//dep <- k //子域名
+			if name == "dep" {
+				dep <- k //子域名链接
+			}
 		}
 	}
 }
 
-func requ_http(http []string, i int) {
+func requ_http(http string) {
 	//批量处理http
-
+	blot.L.Lock()
+	defer blot.L.Unlock()
+	var html string
+	B.Get(http).Scan(&html) //子域名请求
 }
 
 func go_th() {
@@ -105,7 +127,7 @@ func go_th() {
 		case js_data := <-ordin: //.js
 			go requ_js(js_data)
 		case js_data1 := <-dep:
-			go requ_js(js_data1)
+			go requ_http(js_data1)
 		}
 	}
 }
@@ -115,9 +137,9 @@ func requ_js(data string) {
 	blot.L.Lock()
 	var js_data string
 	defer blot.L.Unlock()
+	js1[data] = true
 	B.Get(B.Url + data).Scan(&js_data)
-
-	go fuzz(data, js_data)
+	//go fuzz(data, js_data)
 	go data_separate(js_data)
 }
 func Js_path(context string) []string {
@@ -153,7 +175,7 @@ func data_separate(context string) {
 		} else if okhttp, _ := rehttp.MatchString(data); okhttp {
 			a, b := B.Subdomain(data)
 			if B.Subdom == a {
-				url = append(url, data)
+				url[data] = true
 			} else {
 				if B.DomainName == b {
 					SubdomainName[data] = true
@@ -164,7 +186,7 @@ func data_separate(context string) {
 			if strings.HasPrefix(data, "http") || strings.HasPrefix(data, "https") {
 				continue
 			}
-			url = append(url, data)
+			url[data] = true
 		}
 	}
 }
@@ -181,6 +203,5 @@ func fuzz(data string, context string) {
 			minggan = append(minggan, impression)
 		}
 	}
-	js1[data] = minggan
 
 }

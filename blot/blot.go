@@ -93,6 +93,7 @@ func (B *Ba) Scan(value any) {
 	} else {
 		panic("传入类型需要指针")
 	}
+
 }
 
 func (B *Ba) jsonAssert() map[any]any {

@@ -26,6 +26,7 @@ func Read_config() (map_data map[any]any) {
 
 func Read_fuzz() (b []string) {
 	//读取fuzz
+
 	file, err := os.Open(filepath.Join(rpath(), "fuzz/js.txt"))
 	if err != nil {
 		panic("读取fuzz错误")
@@ -42,6 +43,7 @@ func Read_fuzz() (b []string) {
 		b = append(b, line)
 		//do_your_function(line)
 	}
+
 	return
 
 }
