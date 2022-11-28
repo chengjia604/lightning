@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	ordin = make(chan string, 50)
+	ordin = make(chan string, 30)
 	dep   = make(chan string, 50)
 )
 
@@ -26,12 +26,14 @@ func Ordinary(b *blot.Ba) {
 	var html_data string
 	B = b
 	B.Scan(&html_data)
+
 	go go_th()
-	go js_context(B.Html_url(html_data), "Ordinary")
+	go js_context(B.Html_url(html_data))
 	w.Add(1)
 	w.Wait()
+
 	w.Add(1)
-	go js_parse()
+	go url_parse()
 	w.Wait()
 
 }
@@ -39,10 +41,20 @@ func Ordinary(b *blot.Ba) {
 func js_parse() {
 	//解析js
 	defer w.Done()
+	fmt.Println("js资产：")
 	for k, value := range js1 {
 		color.Green(fmt.Sprintf("%s           %s", k, value))
 	}
-
+}
+func url_parse() {
+	//输出url
+	w.Add(1)
+	defer w.Done()
+	fmt.Println("url资产：")
+	for _, i := range url {
+		color.Green(fmt.Sprintf("%s", i))
+	}
+	go js_parse()
 }
 func Depth(B *blot.Ba) {
 	//深度提取
@@ -50,8 +62,8 @@ func Depth(B *blot.Ba) {
 }
 
 var SubdomainName = make(map[string]bool) //子域名
-func js_context(url_data map[string]bool, typename string) {
-	//爬取第二层应该是用一个线程，而不是一个http一个线程
+func js_context(url_data map[string]bool) {
+
 	defer w.Done()
 	for k, _ := range url_data {
 		if strings.HasPrefix(k, "http") || strings.HasPrefix(k, "https") {
@@ -64,6 +76,7 @@ func js_context(url_data map[string]bool, typename string) {
 			ordin <- k
 		}
 	}
+
 }
 func subdom(k string) {
 	defer w.Done()
@@ -87,7 +100,6 @@ func requ_http(http []string, i int) {
 
 func go_th() {
 	//监听数据，
-
 	for {
 		select {
 		case js_data := <-ordin: //.js
@@ -104,6 +116,7 @@ func requ_js(data string) {
 	var js_data string
 	defer blot.L.Unlock()
 	B.Get(B.Url + data).Scan(&js_data)
+
 	go fuzz(data, js_data)
 	go data_separate(js_data)
 }
@@ -127,17 +140,13 @@ var (
 
 func data_separate(context string) {
 	//js和path分离
+	w.Add(1)
+
 	blot.L.Lock()
+	defer w.Done()
 	defer blot.L.Unlock()
 	for _, data := range Js_path(context) {
 		if ok, _ := rejs.MatchString(data); ok {
-			//js文件继续请求内容
-			//if typename == "ord" {
-			//	js1 = append(js1, data)
-			//} else {
-			//	dep <- data
-			//}
-
 			ordin <- data
 		} else if okcss, _ := recss.MatchString(data); okcss {
 			continue
@@ -161,15 +170,17 @@ func data_separate(context string) {
 }
 
 var fuzzcontext = config.Read_fuzz()
-var minggan []string
 
 func fuzz(data string, context string) {
 	w.Add(1)
+
 	defer w.Done()
+	var minggan []string
 	for _, impression := range fuzzcontext {
 		if ok, _ := regexp.MatchString(".*"+impression+".*", context); ok {
 			minggan = append(minggan, impression)
 		}
 	}
 	js1[data] = minggan
+
 }

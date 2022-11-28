@@ -4,7 +4,13 @@ import (
 	"bufio"
 	"gopkg.in/yaml.v2"
 	"os"
+	"path/filepath"
 )
+
+func rpath() string {
+	project_path, _ := os.Getwd()
+	return project_path
+}
 
 func Read_config() (map_data map[any]any) {
 	/*读取配置文件*/
@@ -20,8 +26,10 @@ func Read_config() (map_data map[any]any) {
 
 func Read_fuzz() (b []string) {
 	//读取fuzz
-
-	file, _ := os.Open("")
+	file, err := os.Open(filepath.Join(rpath(), "fuzz/js.txt"))
+	if err != nil {
+		panic("读取fuzz错误")
+	}
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {

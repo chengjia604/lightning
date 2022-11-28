@@ -30,5 +30,5 @@ func start() {
 	a := time.Now()
 	b := blot.Start().Get(fmt.Sprintf("%v", U))
 	jsfind.Ordinary(b)
-	fmt.Println(time.Since(a))
+	fmt.Println("所用耗时：", time.Since(a))
 }
