@@ -173,8 +173,8 @@ var fuzzcontext = config.Read_fuzz()
 
 func fuzz(data string, context string) {
 	w.Add(1)
-
 	defer w.Done()
+
 	var minggan []string
 	for _, impression := range fuzzcontext {
 		if ok, _ := regexp.MatchString(".*"+impression+".*", context); ok {
