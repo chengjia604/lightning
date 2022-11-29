@@ -25,6 +25,7 @@ type Ba struct {
 var resp *http.Response
 var err error
 var L sync.Mutex
+var Cookie string
 
 func (B *Ba) Get(url string) *Ba {
 	/*
@@ -43,7 +44,9 @@ func (B *Ba) Get(url string) *Ba {
 			panic("get关闭发生错误")
 		}
 	}(resp.Body)
-	resp.Header.Set("user-agent", fmt.Sprintf("%s", structural.Yaml_data["headers"].(map[any]any)["user-agent"]))
+
+	resp.Header.Set("user-agent", fmt.Sprintf("%s", structural.Useraget))
+	resp.Header.Add("cookie", Cookie)
 	respstring, _ := io.ReadAll(resp.Body)
 	B.RespData = respstring
 	//B.Get_data = string(respstring)

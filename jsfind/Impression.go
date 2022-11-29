@@ -30,10 +30,8 @@ func Ordinary(b *blot.Ba) {
 	go js_context(B.Html_url(html_data), "ord")
 	w.Add(1)
 	w.Wait()
-
 	w.Add(1)
 	go url_parse()
-
 	w.Wait()
 }
 func Depth(b *blot.Ba) {
@@ -106,6 +104,7 @@ func subdom(k string, name string) {
 		if b == B.DomainName {
 			SubdomainName[k] = true
 			if name == "dep" {
+				
 				dep <- k //子域名链接
 			}
 		}
@@ -117,7 +116,9 @@ func requ_http(http string) {
 	blot.L.Lock()
 	defer blot.L.Unlock()
 	var html string
-	B.Get(http).Scan(&html) //子域名请求
+	B.Get(http).Scan(&html)                //子域名请求
+	go js_context(B.Html_url(html), "dep") //请求第二层
+
 }
 
 func go_th() {
