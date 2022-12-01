@@ -43,7 +43,6 @@ func Read_fuzz() (b []string) {
 		b = append(b, line)
 		//do_your_function(line)
 	}
-
 	return
 
 }

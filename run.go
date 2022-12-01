@@ -3,10 +3,9 @@ package main
 import (
 	"blot/blot"
 	"blot/jsfind"
-	"blot/structural"
 	"flag"
 	"fmt"
-	"github.com/fatih/color"
+	_ "net/http/pprof"
 	"time"
 )
 
@@ -15,26 +14,54 @@ var u string
 func init() {
 	flag.StringVar(&u, "u", "", "获取的域名")
 	flag.StringVar(&blot.Cookie, "c", "", "设置cookie")
-	flag.StringVar(&structural.Useraget, "us", "", "设置useraget")
-}
-func main() {
-	//color.Blue(" .----------------.  .----------------.  .----------------.  .----------------. \n| .--------------. || .--------------. || .--------------. || .--------------. |\n| |   ______     | || |     ____     | || |   _____      | || |  _________   | |\n| |  |_   _ \\    | || |   .'    `.   | || |  |_   _|     | || | |  _   _  |  | |\n| |    | |_) |   | || |  /  .--.  \\  | || |    | |       | || | |_/ | | \\_|  | |\n| |    |  __'.   | || |  | |    | |  | || |    | |   _   | || |     | |      | |\n| |   _| |__) |  | || |  \\  `--'  /  | || |   _| |__/ |  | || |    _| |_     | |\n| |  |_______/   | || |   `.____.'   | || |  |________|  | || |   |_____|    | |\n| |              | || |              | || |              | || |              | |\n| '--------------' || '--------------' || '--------------' || '--------------' |\n '----------------'  '----------------'  '----------------'  '----------------'")
-	color.Blue("  _ _       _     _         _             \n | (_)     | |   | |       (_)            \n | |_  __ _| |__ | |_ _ __  _ _ __   __ _ \n | | |/ _` | '_ \\| __| '_ \\| | '_ \\ / _` |\n | | | (_| | | | | |_| | | | | | | | (_| |\n |_|_|\\__, |_| |_|\\__|_| |_|_|_| |_|\\__, |\n       __/ |                         __/ |\n      |___/                         |___/ ")
-	color.Yellow("名称：闪电")
-	color.Yellow("版本: 1.0")
-	color.Yellow("语言: Go")
-	color.Yellow("⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡")
-	flag.Parse()
-	if u == "" {
-		color.Green("似乎没有域名")
-		return
-	}
-	start()
+	//flag.StringVar(&structural.Useraget, "us", "", "设置useraget")
 }
 
+//func main() {
+//	//color.Blue(" .----------------.  .----------------.  .----------------.  .----------------. \n| .--------------. || .--------------. || .--------------. || .--------------. |\n| |   ______     | || |     ____     | || |   _____      | || |  _________   | |\n| |  |_   _ \\    | || |   .'    `.   | || |  |_   _|     | || | |  _   _  |  | |\n| |    | |_) |   | || |  /  .--.  \\  | || |    | |       | || | |_/ | | \\_|  | |\n| |    |  __'.   | || |  | |    | |  | || |    | |   _   | || |     | |      | |\n| |   _| |__) |  | || |  \\  `--'  /  | || |   _| |__/ |  | || |    _| |_     | |\n| |  |_______/   | || |   `.____.'   | || |  |________|  | || |   |_____|    | |\n| |              | || |              | || |              | || |              | |\n| '--------------' || '--------------' || '--------------' || '--------------' |\n '----------------'  '----------------'  '----------------'  '----------------'")
+//	//color.Blue("  _ _       _     _         _             \n | (_)     | |   | |       (_)            \n | |_  __ _| |__ | |_ _ __  _ _ __   __ _ \n | | |/ _` | '_ \\| __| '_ \\| | '_ \\ / _` |\n | | | (_| | | | | |_| | | | | | | | (_| |\n |_|_|\\__, |_| |_|\\__|_| |_|_|_| |_|\\__, |\n       __/ |                         __/ |\n      |___/                         |___/ ")
+//	//color.Yellow("名称：闪电")
+//	//color.Yellow("版本: 1.0")
+//	//color.Yellow("语言: Go")
+//	//color.Yellow("⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡")
+//	//flag.Parse()
+//	//if u == "" {
+//	//	color.Green("似乎没有域名")
+//	//	return
+//	//}
+//	//start()
+//	var ww sync.WaitGroup
+//	a := time.Now()
+//	b := blot.Start().Get("https://szsb-xj.facebeacon.com/login")
+//	jsfind.Ordinary(b)
+//	fmt.Println("所用耗时：", time.Since(a))
+//
+//
+//}
+
 func start() {
+	//a := time.Now()
+	//b := blot.Start().Get(fmt.Sprintf("%v", u))
+	////jsfind.Ordinary(b)
+	//fmt.Println("所用耗时：", time.Since(a))
+}
+
+func main() {
 	a := time.Now()
-	b := blot.Start().Get(fmt.Sprintf("%v", u))
-	jsfind.Ordinary(b)
+	//f, err := os.Create("cpu_profile")
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//pprof.StartCPUProfile(f)
+	//defer pprof.StopCPUProfile()
+	b := blot.Start().Get("https://szsb-xj.facebeacon.com")
+	jsfind.Ord(b)
+
+	//f2, err := os.Create("mem_profile")
+	//pprof.WriteHeapProfile(f2)
+	//f2.Close()
+	//
+	//pprof.StopCPUProfile()
+	//f.Close()
 	fmt.Println("所用耗时：", time.Since(a))
 }

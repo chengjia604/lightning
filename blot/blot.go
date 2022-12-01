@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"strings"
 	"sync"
+	"time"
 )
 
 type Ba struct {
@@ -26,15 +27,30 @@ var resp *http.Response
 var err error
 var L sync.Mutex
 var Cookie string
+var aa time.Duration = 0
 
 func (B *Ba) Get(url string) *Ba {
 	/*
 		默认百度请求头，后期可通过命令设置
 	*/
-	if B.DomainName == "" {
-		B.Url = B.Domain(url)                     //带http的域名
-		B.Subdom, B.DomainName = B.Subdomain(url) //顶级域名和二级域名
+	if B.Url == "" {
+		domain := strings.Split(url, "/")
+		B.Url = domain[0] + "//" + domain[2] //顶级域名和二级域名
 	}
+
+	//request, _ := http.NewRequest("GET", url, nil)
+	//request.Header.Set("User-Agent", fmt.Sprintf("%s", structural.Useraget))
+	//client := http.Client{}
+	//resp, _ = client.Do(request)
+	//defer func(Body io.ReadCloser) {
+	//	err := Body.Close()
+	//	if err != nil {
+	//
+	//	}
+	//}(resp.Body)
+	//respstring, _ := io.ReadAll(resp.Body)
+	//B.RespData = respstring
+
 	if resp, err = http.Get(url); err != nil {
 		panic(err)
 	}
@@ -44,12 +60,11 @@ func (B *Ba) Get(url string) *Ba {
 			panic("get关闭发生错误")
 		}
 	}(resp.Body)
-
 	resp.Header.Set("user-agent", fmt.Sprintf("%s", structural.Useraget))
 	resp.Header.Add("cookie", Cookie)
 	respstring, _ := io.ReadAll(resp.Body)
 	B.RespData = respstring
-	//B.Get_data = string(respstring)
+
 	return B
 }
 
@@ -57,9 +72,9 @@ func (B *Ba) PostJson(url string, json_data map[string]any) *Ba {
 	/*
 		默认百度请求头和json的格式
 	*/
-	if B.DomainName == "" {
-		B.DomainName = B.Domain(url)
-	}
+	//if B.DomainName == "" {
+	//	B.DomainName = B.Domain(url)
+	//}
 	B.Json = json_data
 	if resp, err = http.Post(url, "", strings.NewReader(B.jsonData())); err != nil {
 		panic("post请求失败")
