@@ -23,8 +23,6 @@ type Ba struct {
 	Regular
 }
 
-var resp *http.Response
-var err error
 var L sync.Mutex
 var Cookie string
 var aa time.Duration = 0
@@ -38,31 +36,22 @@ func (B *Ba) Get(url string) *Ba {
 		B.Url = domain[0] + "//" + domain[2] //顶级域名和二级域名
 	}
 
-	//request, _ := http.NewRequest("GET", url, nil)
-	//request.Header.Set("User-Agent", fmt.Sprintf("%s", structural.Useraget))
-	//client := http.Client{}
-	//resp, _ = client.Do(request)
-	//defer func(Body io.ReadCloser) {
-	//	err := Body.Close()
-	//	if err != nil {
-	//
-	//	}
-	//}(resp.Body)
-	//respstring, _ := io.ReadAll(resp.Body)
-	//B.RespData = respstring
-
-	if resp, err = http.Get(url); err != nil {
+	resp, err := http.Get(url)
+	if err != nil {
 		panic(err)
 	}
 	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
+		err1 := Body.Close()
+		if err1 != nil {
 			panic("get关闭发生错误")
 		}
 	}(resp.Body)
 	resp.Header.Set("user-agent", fmt.Sprintf("%s", structural.Useraget))
-	resp.Header.Add("cookie", Cookie)
+	resp.Header.Set("Accept", "*/*")
+	//resp.Header.Add("cookie", Cookie)
+
 	respstring, _ := io.ReadAll(resp.Body)
+
 	B.RespData = respstring
 
 	return B
@@ -76,7 +65,8 @@ func (B *Ba) PostJson(url string, json_data map[string]any) *Ba {
 	//	B.DomainName = B.Domain(url)
 	//}
 	B.Json = json_data
-	if resp, err = http.Post(url, "", strings.NewReader(B.jsonData())); err != nil {
+	resp, err := http.Post(url, "", strings.NewReader(B.jsonData()))
+	if err != nil {
 		panic("post请求失败")
 	}
 	defer func() {

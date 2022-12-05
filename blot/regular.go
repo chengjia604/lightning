@@ -21,6 +21,7 @@ func (r Regular) url(resp string) (data []string) {
 		data = append(data, m.String())
 		m, _ = re.FindNextMatch(m)
 	}
+
 	return
 }
 
@@ -72,6 +73,6 @@ func (r Regular) Subdomain(url string) (string, string) {
 			return subdomain.String(), subdomain.String()
 		}
 	}
-	panic(err)
+	panic("域名似乎不正确")
 
 }

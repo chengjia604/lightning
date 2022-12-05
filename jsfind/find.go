@@ -2,6 +2,7 @@ package jsfind
 
 import (
 	"blot/blot"
+	"fmt"
 	"github.com/dlclark/regexp2"
 	"github.com/gookit/color"
 	"strings"
@@ -25,9 +26,11 @@ func Ord(b *blot.Ba) {
 	B.Scan(&html)
 	go go_th()
 	html_map := B.Html_url(html)
+
 	w.Add(1)
 	http_js(html_map)
 	w.Wait()
+	fmt.Println(len(url))
 
 	w.Add(1)
 	go fturl()
@@ -50,16 +53,17 @@ func http_js(data map[string]bool) {
 		https := strings.Split(k, ":")[0]
 		if https == "https" || http == "http" {
 			continue
+
 		} else {
 			ord <- k
 		}
 	}
 }
 
-var js_context string
-
 func js_requ(data string) {
 	defer w.Done()
+
+	var js_context string
 	B.Get(B.Url + data).Scan(&js_context)
 	url_js(js_context)
 }
@@ -77,7 +81,7 @@ func jscontext(context string) []string {
 }
 
 var (
-	rejs   = regexp2.MustCompile("/*.js+?(?=\"|')", 0)
+	rejs   = regexp2.MustCompile("/*.js+?(?=\"|'|>)", 0)
 	recss  = regexp2.MustCompile("(?<=)\\.(css)", 0)
 	rehttp = regexp2.MustCompile("(?<=https?://)[^/].+?(?=/|\"|')", 0) //提取域名
 )
@@ -88,14 +92,12 @@ func url_js(conext string) {
 		if ok, _ := rejs.MatchString(value); ok {
 			ord <- value
 		} else {
+			//color.Greenf(value)
 			//url[value] = true
-			l.Lock()
 			url = append(url, value)
-			l.Unlock()
 		}
 	}
 }
-
 func fturl() {
 	w.Done()
 	for _, value := range url {

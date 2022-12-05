@@ -48,20 +48,8 @@ func start() {
 
 func main() {
 	a := time.Now()
-	//f, err := os.Create("cpu_profile")
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//pprof.StartCPUProfile(f)
-	//defer pprof.StopCPUProfile()
 	b := blot.Start().Get("https://szsb-xj.facebeacon.com")
 	jsfind.Ord(b)
 
-	//f2, err := os.Create("mem_profile")
-	//pprof.WriteHeapProfile(f2)
-	//f2.Close()
-	//
-	//pprof.StopCPUProfile()
-	//f.Close()
 	fmt.Println("所用耗时：", time.Since(a))
 }
