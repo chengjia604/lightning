@@ -14,7 +14,7 @@ import (
 var u string
 
 func init() {
-	flag.StringVar(&u, "u", "", "获取的域名")
+	flag.StringVar(&u, "u", "https://www.glasssix.com/", "获取的域名")
 	flag.StringVar(&blot.Cookie, "c", "", "设置cookie")
 	flag.StringVar(&structural.Useraget, "us", "", "设置useraget")
 }
@@ -25,12 +25,12 @@ func main() {
 	color.Yellow("名称：闪电")
 	color.Yellow("版本: 1.0")
 	color.Yellow("语言: Go")
-	color.Yellow("⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡")
+	color.Yellow("=================================")
 	flag.Parse()
-	if u == "" {
-		color.Green("似乎没有域名")
-		return
-	}
+	//if u == "" {
+	//	color.Green("似乎没有域名")
+	//	return
+	//}
 	start()
 
 }

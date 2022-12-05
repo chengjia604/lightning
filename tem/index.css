@@ -1,0 +1,44 @@
+.table {
+    background-color:#ffffff;
+    position:relative;/*相对定位*/
+    margin-top: 50px;
+    border-color:#d0d0d0;
+    left: 185px;
+
+}
+.table th{
+    height:10px;
+    width:500px;
+    background:#6699ff;
+}
+
+/*table th.headertd{*/
+/*    width:150px*/
+/*}*/
+
+.sidenav {
+    height: 100%;
+    width: 180px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 100px;/*距离顶部的填充距离*/
+}
+/*.sidenav a:first-child{
+    background-color:#ffffff;
+}*/
+.sidenav a:hover{
+    background: #d0d0d0;
+
+}
+
+.sidenav a {
+    padding: 6px 8px 6px 16px;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    line-height:50px;/*字体上下间距*/
+}

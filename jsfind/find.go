@@ -2,6 +2,7 @@ package jsfind
 
 import (
 	"blot/blot"
+	"blot/config"
 	"blot/structural"
 	"fmt"
 	"github.com/dlclark/regexp2"
@@ -36,6 +37,7 @@ func Ord(b *blot.Ba) {
 	w.Wait()
 
 	w.Add(1)
+	config.Create_html(url)
 	go fturl()
 	w.Wait()
 }
