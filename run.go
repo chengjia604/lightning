@@ -48,7 +48,7 @@ func start() {
 
 func main() {
 	a := time.Now()
-	b := blot.Start().Get("https://szsb-xj.facebeacon.com")
+	b := blot.Start().Get("https://www.glasssix.com/")
 	jsfind.Ord(b)
 
 	fmt.Println("所用耗时：", time.Since(a))
