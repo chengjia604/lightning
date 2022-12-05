@@ -2,26 +2,30 @@ package jsfind
 
 import (
 	"blot/blot"
+	"blot/structural"
 	"fmt"
 	"github.com/dlclark/regexp2"
-	"github.com/gookit/color"
+	"github.com/fatih/color"
+	"io"
+	"net/http"
 	"strings"
 	"sync"
 )
 
 var (
-	ord   = make(chan string, 50)
-	w     sync.WaitGroup
-	B     *blot.Ba
-	l     sync.Mutex
-	jsurl = make(map[string]bool)
-	//url   = make(map[string]bool)
-	url []string
+	ord     = make(chan string, 50)
+	w       sync.WaitGroup
+	B       *blot.Ba
+	l       sync.Mutex
+	jsurl   = make(map[string]bool)
+	url     = make(map[string]bool)
+	httpurl = make(map[string]bool)
+	//url []string
 )
 
 func Ord(b *blot.Ba) {
 	var html string
-	color.Greenf("数据收集中。。。。")
+
 	B = b
 	B.Scan(&html)
 	go go_th()
@@ -30,7 +34,6 @@ func Ord(b *blot.Ba) {
 	w.Add(1)
 	http_js(html_map)
 	w.Wait()
-	fmt.Println(len(url))
 
 	w.Add(1)
 	go fturl()
@@ -40,7 +43,6 @@ func go_th() {
 	for {
 		select {
 		case data := <-ord:
-			w.Add(1)
 			go js_requ(data)
 		}
 	}
@@ -56,16 +58,34 @@ func http_js(data map[string]bool) {
 
 		} else {
 			ord <- k
+			w.Add(1)
 		}
 	}
 }
 
 func js_requ(data string) {
 	defer w.Done()
-
-	var js_context string
-	B.Get(B.Url + data).Scan(&js_context)
-	url_js(js_context)
+	//var js_context string
+	//B.Get(B.Url + data).Scan(&js_context)
+	l.Lock()
+	jsurl[data] = true
+	l.Unlock()
+	var js_context []byte
+	resp, err := http.Get(B.Url + data)
+	if err != nil {
+		panic(err)
+	}
+	defer func(Body io.ReadCloser) {
+		err1 := Body.Close()
+		if err1 != nil {
+			panic("get关闭发生错误")
+		}
+	}(resp.Body)
+	resp.Header.Set("user-agent", fmt.Sprintf("%s", structural.Useraget))
+	resp.Header.Set("Accept", "*/*")
+	resp.Header.Add("cookie", blot.Cookie)
+	js_context, _ = io.ReadAll(resp.Body)
+	url_js(string(js_context))
 }
 
 func jscontext(context string) []string {
@@ -89,18 +109,51 @@ var (
 func url_js(conext string) {
 
 	for _, value := range jscontext(conext) {
+
 		if ok, _ := rejs.MatchString(value); ok {
 			ord <- value
+		} else if strings.HasPrefix(value, "https") || strings.HasPrefix(value, "http") {
+			if strings.Split(value, "/")[2] == B.Subdom {
+				l.Lock()
+				url[value] = true
+				l.Unlock()
+			} else {
+				l.Lock()
+				httpurl[value] = true
+				l.Unlock()
+			}
 		} else {
-			//color.Greenf(value)
-			//url[value] = true
-			url = append(url, value)
+			blot.L.Lock()
+			url[value] = true
+			blot.L.Unlock()
 		}
+
 	}
 }
 func fturl() {
-	w.Done()
-	for _, value := range url {
-		color.Greenf(value + "\n")
+	defer w.Done()
+	fmt.Println("目标资产")
+	for k, _ := range url {
+		color.Green(k + "\n")
+	}
+	w.Add(1)
+	go domname()
+}
+
+func domname() {
+	defer w.Done()
+	fmt.Println("其他域名资产")
+	for k, _ := range httpurl {
+		color.Green(k + "\n")
+	}
+	w.Add(1)
+	go ftjs()
+}
+func ftjs() {
+	//
+	defer w.Done()
+	fmt.Println("js资产")
+	for k, _ := range jsurl {
+		color.Green(k + "\n")
 	}
 }

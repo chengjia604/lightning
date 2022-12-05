@@ -33,7 +33,8 @@ func (B *Ba) Get(url string) *Ba {
 	*/
 	if B.Url == "" {
 		domain := strings.Split(url, "/")
-		B.Url = domain[0] + "//" + domain[2] //顶级域名和二级域名
+		B.Url = domain[0] + "//" + domain[2]
+		B.Subdom = strings.Split(domain[2], ".")[1]
 	}
 
 	resp, err := http.Get(url)
@@ -49,9 +50,7 @@ func (B *Ba) Get(url string) *Ba {
 	resp.Header.Set("user-agent", fmt.Sprintf("%s", structural.Useraget))
 	resp.Header.Set("Accept", "*/*")
 	//resp.Header.Add("cookie", Cookie)
-
 	respstring, _ := io.ReadAll(resp.Body)
-
 	B.RespData = respstring
 
 	return B
@@ -87,7 +86,9 @@ func (B *Ba) Scan(value any) {
 		dataValue := reflect.ValueOf(value).Elem()
 		switch dataType.Elem().Kind() { //获取传入变量的类型种类
 		case reflect.String:
+
 			dataValue.SetString(string(B.RespData))
+
 		case reflect.Struct:
 			for i := 0; i < dataType.Elem().NumField(); i++ { //通过反射对结构体赋值
 				name := B.jsonAssert()[strings.ToLower(dataType.Elem().Field(i).Name)] //结构体名称转小写
