@@ -9,7 +9,6 @@ import (
 	"reflect"
 	"strings"
 	"sync"
-	"time"
 )
 
 type Ba struct {
@@ -25,7 +24,7 @@ type Ba struct {
 
 var L sync.Mutex
 var Cookie string
-var aa time.Duration = 0
+var I string
 
 func (B *Ba) Get(url string) *Ba {
 	/*

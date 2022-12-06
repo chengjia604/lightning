@@ -37,9 +37,12 @@ func Ord(b *blot.Ba) {
 	w.Wait()
 
 	w.Add(1)
-	config.Create_html(url)
+	if blot.I != "" {
+		config.Create_html(url, httpurl, blot.I)
+	}
 	go fturl()
 	w.Wait()
+	color.Green("收集完成！！！")
 }
 func go_th() {
 	for {
@@ -57,7 +60,6 @@ func http_js(data map[string]bool) {
 		https := strings.Split(k, ":")[0]
 		if https == "https" || http == "http" {
 			continue
-
 		} else {
 			ord <- k
 			w.Add(1)
@@ -133,8 +135,9 @@ func url_js(conext string) {
 	}
 }
 func fturl() {
+	//url
 	defer w.Done()
-	fmt.Println("目标资产")
+	fmt.Println("目标资产:")
 	for k, _ := range url {
 		color.Green(k + "\n")
 	}
@@ -143,8 +146,9 @@ func fturl() {
 }
 
 func domname() {
+	//domname
 	defer w.Done()
-	fmt.Println("其他域名资产")
+	fmt.Println("其他域名资产:")
 	for k, _ := range httpurl {
 		color.Green(k + "\n")
 	}
@@ -152,9 +156,9 @@ func domname() {
 	go ftjs()
 }
 func ftjs() {
-	//
+	//js
 	defer w.Done()
-	fmt.Println("js资产")
+	fmt.Println("js资产:")
 	for k, _ := range jsurl {
 		color.Green(k + "\n")
 	}
