@@ -17,7 +17,8 @@ func init() {
 	flag.StringVar(&u, "u", "https://www.glasssix.com/", "获取的域名")
 	flag.StringVar(&blot.Cookie, "cookie", "", "设置cookie")
 	flag.StringVar(&structural.Useraget, "us", "", "设置useraget")
-	flag.StringVar(&blot.I, "i", "123", "生成前端文档")
+	flag.StringVar(&blot.I, "i", "456", "生成文档")
+	flag.StringVar(&blot.S, "s", "", "详细显示")
 
 }
 

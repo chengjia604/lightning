@@ -25,6 +25,7 @@ type Ba struct {
 var L sync.Mutex
 var Cookie string
 var I string
+var S string
 
 func (B *Ba) Get(url string) *Ba {
 	/*

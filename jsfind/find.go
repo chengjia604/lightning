@@ -36,12 +36,15 @@ func Ord(b *blot.Ba) {
 	http_js(html_map)
 	w.Wait()
 
-	w.Add(1)
 	if blot.I != "" {
-		config.Create_html(url, httpurl, blot.I)
+		config.Create_html(url, httpurl, jsurl, blot.I, B.Url)
 	}
-	go fturl()
-	w.Wait()
+	if blot.S != "" {
+		w.Add(1)
+		go fturl()
+		w.Wait()
+	}
+
 	color.Green("收集完成！！！")
 }
 func go_th() {
