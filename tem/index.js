@@ -8,7 +8,7 @@ domname.onclick=function(){
     for(let [key,value] of Object.entries(domnameurl[0])){
         let html= `
         <tr>
-        <td>${key}</td>
+        <td><a href="${key}">${key}</a></td>
          <td>${value}</td>
         </tr>
         `
@@ -32,7 +32,9 @@ urls.onclick=function (){
     for(let [key,value] of Object.entries(url[0])){
         let html= `
         <tr>
-        <td>${host+key}</td>
+        <td>
+        <a href='${host+key}'>${host+key}</a>
+</td>
          <td>${value}</td>
         </tr>
         `
@@ -42,7 +44,7 @@ urls.onclick=function (){
 for(let [key,value] of Object.entries(url[0])){
         let html= `
         <tr>
-        <td>${key}</td>
+        <td><a href='${host+key}'>${host+key}</a></td>
          <td>${value}</td>
         </tr>
         `
