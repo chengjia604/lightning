@@ -88,7 +88,8 @@ func js_requ(data string) {
 			panic("get关闭发生错误")
 		}
 	}(resp.Body)
-	resp.Header.Set("user-agent", fmt.Sprintf("%s", structural.Useraget))
+	fmt.Println(structural.Useraget)
+	resp.Header.Set("user-agent", structural.Useraget)
 	resp.Header.Set("Accept", "*/*")
 	resp.Header.Add("cookie", blot.Cookie)
 	js_context, _ = io.ReadAll(resp.Body)
