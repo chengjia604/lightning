@@ -19,7 +19,7 @@ func init() {
 	flag.StringVar(&structural.Useraget, "us", structural.Useraget, "设置useraget")
 	flag.StringVar(&blot.I, "i", "", "生成文档")
 	flag.BoolVar(&blot.S, "s", false, "详细显示")
-
+	flag.IntVar(&blot.T, "t", 30, "线程数")
 }
 
 func main() {
@@ -28,9 +28,8 @@ func main() {
 	color.Yellow("名称：闪电")
 	color.Yellow("版本: 1.0.1")
 	color.Yellow("语言: Go")
-	color.Yellow("=================================")
+	color.Yellow("=====================================")
 	flag.Parse()
-
 	if u == "" {
 		color.Green("似乎没有域名")
 		return

@@ -26,6 +26,7 @@ var L sync.Mutex
 var Cookie string
 var I string
 var S bool
+var T int
 
 func (B *Ba) Get(url string) *Ba {
 	/*

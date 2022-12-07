@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	ord               = make(chan string, 30)
+	ord               = make(chan string, blot.T)
 	w                 sync.WaitGroup
 	B                 *blot.Ba
 	l                 sync.Mutex
@@ -48,7 +48,6 @@ func Ord(b *blot.Ba) {
 		go fturl()
 		w.Wait()
 	}
-
 	color.Green("收集完成！！！")
 }
 func go_th() {
@@ -186,7 +185,6 @@ func fuzz(url string, pandaun int) {
 			sensitive = append(sensitive, value)
 		}
 	}
-
 	if pandaun == 1 {
 		l.Lock()
 		sensitive_url[url] = sensitive
