@@ -88,7 +88,7 @@ func js_requ(data string) {
 			panic("get关闭发生错误")
 		}
 	}(resp.Body)
-	fmt.Println(structural.Useraget)
+
 	resp.Header.Set("user-agent", structural.Useraget)
 	resp.Header.Set("Accept", "*/*")
 	resp.Header.Add("cookie", blot.Cookie)
