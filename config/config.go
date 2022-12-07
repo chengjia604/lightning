@@ -48,7 +48,7 @@ func Read_fuzz() (b []string) {
 	return
 }
 
-func Create_html(url, domname, jsdata map[string]bool, name string, host string) {
+func Create_html(url, domname map[string][]string, jsdata map[string]bool, name string, host string) {
 	//创建模板
 	file, err := os.OpenFile(filepath.Join(rpath(), "tem/"+name+".html"), os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {

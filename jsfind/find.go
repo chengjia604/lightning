@@ -9,18 +9,22 @@ import (
 	"github.com/fatih/color"
 	"io"
 	"net/http"
+	"regexp"
 	"strings"
 	"sync"
 )
 
 var (
-	ord     = make(chan string, 30)
-	w       sync.WaitGroup
-	B       *blot.Ba
-	l       sync.Mutex
-	jsurl   = make(map[string]bool)
-	url     = make(map[string]bool)
-	httpurl = make(map[string]bool)
+	ord               = make(chan string, 30)
+	w                 sync.WaitGroup
+	B                 *blot.Ba
+	l                 sync.Mutex
+	jsurl             = make(map[string]bool)
+	url               = make(map[string]bool)
+	httpurl           = make(map[string]bool)
+	funzz             = config.Read_fuzz()
+	sensitive_url     = make(map[string][]string)
+	sensitive_domname = make(map[string][]string)
 	//url []string
 )
 
@@ -37,9 +41,9 @@ func Ord(b *blot.Ba) {
 	w.Wait()
 
 	if blot.I != "" {
-		config.Create_html(url, httpurl, jsurl, blot.I, B.Url)
+		config.Create_html(sensitive_url, sensitive_domname, jsurl, blot.I, B.Url)
 	}
-	if blot.S != "" {
+	if blot.S {
 		w.Add(1)
 		go fturl()
 		w.Wait()
@@ -62,7 +66,11 @@ func http_js(data map[string]bool) {
 		http := strings.Split(k, ":")[0]
 		https := strings.Split(k, ":")[0]
 		if https == "https" || http == "http" {
-			continue
+			if strings.Split(k, "/")[2] == B.Subdom {
+				url[k] = true
+			} else {
+				httpurl[k] = true
+			}
 		} else {
 			ord <- k
 			w.Add(1)
@@ -126,14 +134,15 @@ func url_js(conext string) {
 				url[value] = true
 				l.Unlock()
 			} else {
-				l.Lock()
-				httpurl[value] = true
-				l.Unlock()
+				w.Add(1)
+				go fuzz(value, 2)
 			}
 		} else {
-			blot.L.Lock()
-			url[value] = true
-			blot.L.Unlock()
+			//blot.L.Lock()
+			//url[value] = true
+			//blot.L.Unlock()
+			w.Add(1)
+			go fuzz(value, 1)
 		}
 
 	}
@@ -142,7 +151,7 @@ func fturl() {
 	//url
 	defer w.Done()
 	fmt.Println("目标资产:")
-	for k, _ := range url {
+	for k, _ := range sensitive_url {
 		color.Green(k + "\n")
 	}
 	w.Add(1)
@@ -153,7 +162,7 @@ func domname() {
 	//domname
 	defer w.Done()
 	fmt.Println("其他域名资产:")
-	for k, _ := range httpurl {
+	for k, _ := range sensitive_domname {
 		color.Green(k + "\n")
 	}
 	w.Add(1)
@@ -166,4 +175,26 @@ func ftjs() {
 	for k, _ := range jsurl {
 		color.Green(k + "\n")
 	}
+}
+
+func fuzz(url string, pandaun int) {
+	//匹配敏感字符
+	defer w.Done()
+	var sensitive []string
+	for _, value := range funzz {
+		if ok, _ := regexp.MatchString(".*"+value+".*", url); ok {
+			sensitive = append(sensitive, value)
+		}
+	}
+
+	if pandaun == 1 {
+		l.Lock()
+		sensitive_url[url] = sensitive
+		l.Unlock()
+	} else if pandaun == 2 {
+		l.Lock()
+		sensitive_domname[url] = sensitive
+		l.Unlock()
+	}
+
 }

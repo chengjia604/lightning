@@ -14,11 +14,11 @@ import (
 var u string
 
 func init() {
-	flag.StringVar(&u, "u", "https://www.glasssix.com/", "获取的域名")
+	flag.StringVar(&u, "u", "", "获取的域名")
 	flag.StringVar(&blot.Cookie, "cookie", "", "设置cookie")
 	flag.StringVar(&structural.Useraget, "us", structural.Useraget, "设置useraget")
 	flag.StringVar(&blot.I, "i", "", "生成文档")
-	flag.StringVar(&blot.S, "s", "", "详细显示")
+	flag.BoolVar(&blot.S, "s", false, "详细显示")
 
 }
 
