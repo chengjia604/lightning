@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	ord     = make(chan string, 50)
+	ord     = make(chan string, 30)
 	w       sync.WaitGroup
 	B       *blot.Ba
 	l       sync.Mutex
