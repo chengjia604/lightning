@@ -13,7 +13,7 @@ windows用户：直接使用cmd命令使用lightning.exe，linux用户需要使�
 - -c 设置cookie(lightning.exe -u xxx.com -c cookie值)
 - -us 设置User-Agent(lightning.exe -u xxx.com -us user-agent值)
 - -h 查看帮助
-识别敏感url的字典在fuzz下的js.txt中，有需求的小伙伴可以自行配置
+- 识别敏感url的字典在fuzz下的js.txt中，有需求的小伙伴可以自行配置
 
 ![输入图片说明](1.png)
 
