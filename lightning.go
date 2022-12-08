@@ -7,7 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/fatih/color"
-	_ "net/http/pprof"
+
 	"time"
 )
 
