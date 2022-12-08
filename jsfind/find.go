@@ -66,13 +66,13 @@ func http_js(data map[string]bool) {
 		https := strings.Split(k, ":")[0]
 		if https == "https" || http_ == "http" {
 			if strings.Split(k, "/")[2] == B.Subdom {
-				url[k] = true
+				//url[k] = true
 				w.Add(1)
 				go fuzz(k, 1)
 			} else {
-				httpurl[k] = true
+				//httpurl[k] = true
 				w.Add(1)
-				go fuzz(k, 1)
+				go fuzz(k, 2)
 			}
 		} else {
 			ord <- k
@@ -131,6 +131,8 @@ func url_js(conext string) {
 
 		if ok, _ := rejs.MatchString(value); ok {
 			ord <- value
+		} else if ok, _ := recss.MatchString(value); ok {
+			continue
 		} else if strings.HasPrefix(value, "https") || strings.HasPrefix(value, "http") {
 			if strings.Split(value, "/")[2] == B.Subdom {
 				l.Lock()
@@ -140,14 +142,11 @@ func url_js(conext string) {
 				w.Add(1)
 				go fuzz(value, 2)
 			}
-		} else if ok, _ := recss.MatchString(value); ok {
-			continue
 		} else {
 			//blot.L.Lock()
 			//url[value] = true
 			//blot.L.Unlock()
 			w.Add(1)
-
 			go fuzz(value, 1)
 		}
 
