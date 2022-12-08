@@ -62,13 +62,17 @@ func go_th() {
 func http_js(data map[string]bool) {
 	defer w.Done()
 	for k, _ := range data {
-		http := strings.Split(k, ":")[0]
+		http_ := strings.Split(k, ":")[0]
 		https := strings.Split(k, ":")[0]
-		if https == "https" || http == "http" {
+		if https == "https" || http_ == "http" {
 			if strings.Split(k, "/")[2] == B.Subdom {
 				url[k] = true
+				w.Add(1)
+				go fuzz(k, 1)
 			} else {
 				httpurl[k] = true
+				w.Add(1)
+				go fuzz(k, 1)
 			}
 		} else {
 			ord <- k
@@ -117,7 +121,7 @@ func jscontext(context string) []string {
 
 var (
 	rejs   = regexp2.MustCompile("/*.js+?(?=\"|'|>)", 0)
-	recss  = regexp2.MustCompile("(?<=)\\.(css)", 0)
+	recss  = regexp2.MustCompile("(?<=)\\.(css|png|jpg|ico)", 0)
 	rehttp = regexp2.MustCompile("(?<=https?://)[^/].+?(?=/|\"|')", 0) //提取域名
 )
 
@@ -136,11 +140,14 @@ func url_js(conext string) {
 				w.Add(1)
 				go fuzz(value, 2)
 			}
+		} else if ok, _ := recss.MatchString(value); ok {
+			continue
 		} else {
 			//blot.L.Lock()
 			//url[value] = true
 			//blot.L.Unlock()
 			w.Add(1)
+
 			go fuzz(value, 1)
 		}
 
@@ -182,7 +189,7 @@ func fuzz(url string, pandaun int) {
 	var sensitive []string
 	for _, value := range funzz {
 		if ok, _ := regexp.MatchString(".*"+value+".*", url); ok {
-			sensitive = append(sensitive, value)
+			sensitive = append(sensitive, value+"1")
 		}
 	}
 	if pandaun == 1 {
