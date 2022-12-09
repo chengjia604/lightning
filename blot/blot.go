@@ -35,7 +35,8 @@ func (B *Ba) Get(url string) *Ba {
 	if B.Url == "" {
 		domain := strings.Split(url, "/")
 		B.Url = domain[0] + "//" + domain[2]
-		B.Subdom = strings.Split(domain[2], ".")[1]
+		//B.Subdom = strings.Split(domain[2], ".")[1]
+		B.Subdom = domain[2]
 	}
 
 	resp, err := http.Get(url)

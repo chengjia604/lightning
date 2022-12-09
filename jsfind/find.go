@@ -30,7 +30,6 @@ var (
 
 func Ord(b *blot.Ba) {
 	var html string
-
 	B = b
 	B.Scan(&html)
 	go go_th()
@@ -50,6 +49,7 @@ func Ord(b *blot.Ba) {
 	}
 	color.Green("收集完成！！！")
 }
+
 func go_th() {
 	for {
 		select {
@@ -58,6 +58,8 @@ func go_th() {
 		}
 	}
 }
+
+var jss = regexp2.MustCompile("/*\\.js", 0)
 
 func http_js(data map[string]bool) {
 	defer w.Done()
@@ -74,9 +76,12 @@ func http_js(data map[string]bool) {
 				w.Add(1)
 				go fuzz(k, 2)
 			}
-		} else {
-			ord <- k
+		} else if ok, _ := jss.MatchString(k); ok {
 			w.Add(1)
+			ord <- k
+		} else {
+			w.Add(1)
+			go fuzz(k, 1)
 		}
 	}
 }
@@ -85,6 +90,7 @@ func js_requ(data string) {
 	defer w.Done()
 	//var js_context string
 	//B.Get(B.Url + data).Scan(&js_context)
+
 	l.Lock()
 	jsurl[data] = true
 	l.Unlock()
@@ -128,16 +134,17 @@ var (
 func url_js(conext string) {
 
 	for _, value := range jscontext(conext) {
-
 		if ok, _ := rejs.MatchString(value); ok {
 			ord <- value
 		} else if ok, _ := recss.MatchString(value); ok {
 			continue
 		} else if strings.HasPrefix(value, "https") || strings.HasPrefix(value, "http") {
 			if strings.Split(value, "/")[2] == B.Subdom {
-				l.Lock()
-				url[value] = true
-				l.Unlock()
+				//l.Lock()
+				//url[value] = true //需要修改
+				//l.Unlock()
+				w.Add(1)
+				go fuzz(value, 1)
 			} else {
 				w.Add(1)
 				go fuzz(value, 2)
@@ -148,6 +155,7 @@ func url_js(conext string) {
 			//blot.L.Unlock()
 			w.Add(1)
 			go fuzz(value, 1)
+
 		}
 
 	}
@@ -188,7 +196,7 @@ func fuzz(url string, pandaun int) {
 	var sensitive []string
 	for _, value := range funzz {
 		if ok, _ := regexp.MatchString(".*"+value+".*", url); ok {
-			sensitive = append(sensitive, value+"1")
+			sensitive = append(sensitive, value)
 		}
 	}
 	if pandaun == 1 {
