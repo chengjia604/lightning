@@ -59,7 +59,7 @@ func Create_html(url, domname map[string][]string, jsdata map[string]bool, name 
 	file_data.WriteString("<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n<link rel=\"stylesheet\" type=\"text/css\" href='./index.css'>\n    <script src=\"https://cdn.bootcss.com/jquery/3.3.1/jquery.js\"></script>\n    <script src=\"https://cdn.bootcss.com/jquery.form/4.2.2/jquery.form.js\"></script>\n<title>Lightning</title>\n</head>\n<body>\n<div class=\"sidenav\">\n    <a href=\"javascript:void(0)\" id=\"url\">url资产</a>\n    <a href=\"javascript:void(0)\" id=\"domname\">其他域名资产</a>\n    <a href=\"javascript:void(0)\" id=\"js\">js资产</a>\n</div>\n    <div>\n        <table border=\"1\" cellspacing=\"0\" class=\"table\" id=\"tb\">\n           <thead>\n           <tr>\n               <th>url资产</th>\n               <th>敏感字段</th>\n           </tr>\n           </thead>\n            <tbody>\n            </tbody>\n       </table>\n    </div>\n</body>\n<script src=\"./index.js\"></script>    \n</html>body>")
 
 	file_data.Flush()
-	js, err1 := os.OpenFile(filepath.Join(rpath(), "tem/index.js"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	js, err1 := os.OpenFile(filepath.Join(rpath(), "tem/"+name+".js"), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
 	if err1 != nil {
 		panic("生成js文件错误")
 	}
