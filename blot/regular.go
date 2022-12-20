@@ -32,15 +32,22 @@ func (r Regular) Html_url(resp string) map[string]bool {
 	data := r.url(resp)
 	mismatch := []string{"jpg", "png", "gif", "jpeg", "css", "ico"}
 	for _, i := range data {
-		c := strings.Split(i, "\"")
-		c1 := strings.Split(c[len(c)-1], ".")
-		a := c1[len(c1)-1] //取后缀
+		c := strings.Split(i, ".")
+		c1 := strings.Split(c[len(c)-1], "\"")[0]
+		//a := c1[0]
+		//c := strings.Split(i, "\"")
+		//c1 := strings.Split(c[len(c)-1], ".")
+		//a := c1[len(c1)-1] //取后缀
 		for _, houzui := range mismatch {
-			if a == houzui {
+			if c1 == houzui {
 				goto c
 			}
 		}
-		data_map[c[len(c)-1]] = true
+		if len(strings.Split(i, "\"")) > 1 {
+			data_map[strings.Split(i, "\"")[1]] = true
+		} else {
+			data_map[strings.Split(i, "\"")[0]] = true
+		}
 	c:
 		continue
 	}

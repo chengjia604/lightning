@@ -90,12 +90,18 @@ func js_requ(data string) {
 	defer w.Done()
 	//var js_context string
 	//B.Get(B.Url + data).Scan(&js_context)
-
+	var resp *http.Response
+	var err error
 	l.Lock()
 	jsurl[data] = true
 	l.Unlock()
 	var js_context []byte
-	resp, err := http.Get(B.Url + data)
+	if strings.HasPrefix(data, "/") {
+		resp, err = http.Get(B.Url + data)
+	} else {
+		resp, err = http.Get(B.Url + "/" + data)
+	}
+
 	if err != nil {
 		panic(err)
 	}
@@ -110,13 +116,15 @@ func js_requ(data string) {
 	resp.Header.Set("Accept", "*/*")
 	resp.Header.Add("cookie", blot.Cookie)
 	js_context, _ = io.ReadAll(resp.Body)
+
 	url_js(string(js_context))
 }
 
 func jscontext(context string) []string {
 	var path_data []string
 	//提取js文件中的.js和/xxx路径
-	recom := regexp2.MustCompile("(?<='|\")/[a-zA-Z].+?(?='|\")|(https?|http|ftp|file):\\/\\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]", 0) //(?<='|")/[a-zA-Z].+?(?='|")
+	//recom := regexp2.MustCompile("(?<='|\")#/[a-zA-Z].+?(?='|\")|(?<='|\")/[a-zA-Z].+?(?='|\")|(https?|http|ftp|file):\\/\\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]", 0) //(?<='|")/[a-zA-Z].+?(?='|")
+	recom := regexp2.MustCompile("(?<='|\")#/[a-zA-Z].+?(?='|\")|(?<='|\")/[a-zA-Z].+?(?='|\")|(https?|http|ftp|file):\\/\\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]", 0)
 	m, _ := recom.FindStringMatch(context)
 	for m != nil {
 		path_data = append(path_data, m.String())

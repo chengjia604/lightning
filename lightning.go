@@ -7,7 +7,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/fatih/color"
-
 	"time"
 )
 
@@ -36,6 +35,7 @@ func main() {
 	}
 	color.Green("数据收集中...." + "\n")
 	start()
+
 }
 
 func start() {
