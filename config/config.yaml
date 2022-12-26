@@ -1,5 +1,5 @@
 #regular: (https?|http|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]|(href|src)="[\'\"]?([^\'\"]*)[^\'\"]
-regular: (https?|http|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]|(?<=href="|'|src="|')/.+?(?="|')|(?<=href=|src)/.+?(?= |>)|(?<=href=|src=).+?(?= |>)
+regular: (https?|http|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]|(?<=href=|src=)/.+?(?= |>)|(?<=href=|src=).+?(?= |>)
 
 headers:
   content-type: application/json
